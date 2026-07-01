@@ -1,0 +1,270 @@
+
+GUIA RÁPIDO DO GDB (GNU DEBUGGER)
+================================
+
+EXECUÇÃO
+--------
+
+gdb <programa> [core dump]
+    Inicia o GDB (opcionalmente com um core dump).
+
+gdb --args <programa> <argumentos>
+    Inicia o GDB passando argumentos ao programa.
+
+gdb --pid <PID>
+    Inicia o GDB e anexa a um processo em execução.
+
+set args <argumentos>
+    Define os argumentos que serão passados ao programa.
+
+run
+    Executa o programa.
+
+kill
+    Encerra o programa em execução.
+
+
+BREAKPOINTS
+-----------
+
+break <local>
+    Cria um novo breakpoint.
+
+delete <número>
+    Remove um breakpoint.
+
+clear
+    Remove todos os breakpoints.
+
+enable <número>
+    Habilita um breakpoint desativado.
+
+disable <número>
+    Desabilita um breakpoint.
+
+
+WATCHPOINTS
+-----------
+
+watch <local>
+    Cria um novo watchpoint.
+
+delete/enable/disable <número>
+    Funciona da mesma forma que para breakpoints.
+
+
+LOCAIS VÁLIDOS (<where>)
+------------------------
+
+function_name
+    Monitora ou interrompe em uma função específica.
+
+line_number
+    Monitora ou interrompe em uma linha do arquivo atual.
+
+file:line_number
+    Monitora ou interrompe em uma linha de um arquivo específico.
+
+
+CONDIÇÕES
+----------
+
+break/watch <local> if <condição>
+    Aciona apenas se a condição for verdadeira.
+
+condition <número> <condição>
+    Define ou altera a condição de um breakpoint/watchpoint existente.
+
+
+ANÁLISE DA PILHA DE CHAMADAS (STACK)
+------------------------------------
+
+backtrace
+where
+    Exibe a pilha de chamadas.
+
+backtrace full
+where full
+    Exibe a pilha de chamadas e as variáveis locais de cada frame.
+
+frame <número>
+    Seleciona um frame específico da pilha.
+
+
+EXECUÇÃO PASSO A PASSO
+----------------------
+
+step
+    Executa a próxima instrução entrando em funções.
+
+next
+    Executa a próxima instrução sem entrar em funções.
+
+finish
+    Continua até a função atual retornar.
+
+continue
+    Continua a execução normalmente.
+
+
+VARIÁVEIS E MEMÓRIA
+-------------------
+
+print/format <item>
+    Exibe o conteúdo de uma variável, memória ou registrador.
+
+display/format <item>
+    Igual ao print, mas exibe automaticamente após cada passo.
+
+undisplay <número>
+    Remove um display.
+
+enable display <número>
+disable display <número>
+    Habilita ou desabilita um display.
+
+x/nfu <endereço>
+    Exibe conteúdo da memória.
+
+
+UNIDADES DE MEMÓRIA
+-------------------
+
+b  = Byte (1 byte)
+h  = Half-word (2 bytes)
+w  = Word (4 bytes)
+g  = Giant word (8 bytes)
+
+
+FORMATOS DE EXIBIÇÃO
+--------------------
+
+a  = Ponteiro
+c  = Caractere
+d  = Decimal com sinal
+f  = Ponto flutuante
+o  = Octal
+s  = String C
+t  = Binário
+u  = Decimal sem sinal
+x  = Hexadecimal
+
+
+TIPOS DE DADOS CONSULTÁVEIS
+---------------------------
+
+expression
+    Quase qualquer expressão C.
+
+file_name::variable_name
+    Variável estática definida em um arquivo.
+
+function::variable_name
+    Variável definida em uma função.
+
+{type}address
+    Interpreta o conteúdo de um endereço como um tipo C.
+
+$register
+    Exibe o conteúdo de um registrador.
+
+
+REGISTRADORES IMPORTANTES
+-------------------------
+
+$esp
+    Stack Pointer
+
+$ebp
+    Frame Pointer
+
+$eip
+    Instruction Pointer
+
+
+THREADS
+-------
+
+thread <número>
+    Seleciona uma thread para operar.
+
+
+MANIPULAÇÃO DO PROGRAMA
+-----------------------
+
+set var <variável>=<valor>
+    Altera o valor de uma variável.
+
+return <expressão>
+    Força a função atual a retornar imediatamente.
+
+
+CÓDIGO-FONTE
+------------
+
+directory <diretório>
+    Adiciona um diretório à busca de arquivos-fonte.
+
+list
+list <arquivo>:<função>
+list <arquivo>:<linha>
+list <início>,<fim>
+    Exibe trechos do código-fonte.
+
+set listsize <quantidade>
+    Define quantas linhas serão mostradas pelo comando list.
+
+
+SINAIS
+-------
+
+handle <sinal> <opções>
+
+Opções:
+
+print / noprint
+    Exibir ou não mensagens sobre sinais.
+
+stop / nostop
+    Parar ou não a execução quando o sinal ocorrer.
+
+pass / nopass
+    Repassar ou não o sinal ao programa.
+
+
+INFORMAÇÕES ÚTEIS
+-----------------
+
+disassemble
+disassemble <local>
+    Desmonta (assembly) a função atual ou uma localização específica.
+
+info args
+    Mostra os argumentos da função atual.
+
+info breakpoints
+    Lista breakpoints e watchpoints.
+
+info display
+    Lista displays ativos.
+
+info locals
+    Mostra variáveis locais.
+
+info sharedlibrary
+    Lista bibliotecas compartilhadas carregadas.
+
+info signals
+    Lista sinais e seu tratamento atual.
+
+info threads
+    Lista todas as threads.
+
+show directories
+    Mostra os diretórios usados para localizar código-fonte.
+
+show listsize
+    Mostra quantas linhas o comando list exibe.
+
+whatis variable_name
+    Exibe o tipo de uma variável.

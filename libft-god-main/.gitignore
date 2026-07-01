@@ -1,0 +1,30 @@
+# System files
+.DS_Store
+Thumbs.db
+*.dSYM/
+
+# FUSE filesystem artifacts
+.fuse_hidden*
+
+# Compiled files and binaries
+*.o
+*.a
+*.out
+*.so
+*.dylib
+user_exe
+
+# Project specific results and logs
+deepthought
+changelog
+
+# User configuration
+my_config.sh
+
+# Editor temporary files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+*.dSYM/
