@@ -6,7 +6,7 @@
 /*   By: rgoulart <rgoulart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/20 10:32:23 by rgoulart          #+#    #+#             */
-/*   Updated: 2026/06/26 17:16:44 by rgoulart         ###   ########.fr       */
+/*   Updated: 2026/07/09 07:35:26 by rgoulart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ static int	ft_process(char c, va_list *args)
 	if (c == 'u')
 		return (ft_putunsigned(va_arg(*args, unsigned int)));
 	if (c == 'x')
-		return (ft_puthexadecimal(va_arg(*args, unsigned long), 0));
+		return (ft_puthexadecimal(va_arg(*args, unsigned int), 0));
 	if (c == 'X')
-		return (ft_puthexadecimal(va_arg(*args, unsigned long), 1));
+		return (ft_puthexadecimal(va_arg(*args, unsigned int), 1));
 	if (c == '%')
 		return (ft_putchar('%'));
 	return (0);

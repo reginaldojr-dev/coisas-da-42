@@ -3,14 +3,14 @@
 #                                                         :::      ::::::::    #
 #    MAKEFILE                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: rgoulart <rgoulart@student.42sp.org.br>    +#+  +:+       +#+         #
+#    By: rgoulart <rgoulart@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/25 09:11:08 by rgoulart          #+#    #+#              #
-#    Updated: 2026/06/25 09:11:43 by rgoulart         ###   ########.fr        #
+#    Updated: 2026/07/09 07:07:37 by rgoulart         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = ftprintf.a
+NAME = libftprintf.a
 
 SRC = ft_printf.c \
       ft_putchar.c \

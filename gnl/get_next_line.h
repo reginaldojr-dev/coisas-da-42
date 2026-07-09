@@ -1,27 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rgoulart <rgoulart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/20 08:48:58 by rgoulart          #+#    #+#             */
-/*   Updated: 2026/07/09 07:39:39 by rgoulart         ###   ########.fr       */
+/*   Created: 2026/07/09 00:18:02 by rgoulart          #+#    #+#             */
+/*   Updated: 2026/07/09 02:36:54 by rgoulart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#ifndef GET_NEXT_LINE_H
+# define GET_NEXT_LINE_H
 
-# include <stdarg.h>
 # include <unistd.h>
+# include <stdlib.h>
 
-int	ft_printf(const char *str, ...);
-int	ft_putchar(char c);
-int	ft_putstr(char *str);
-int	ft_putnbr(int n);
-int	ft_putunsigned(unsigned int n);
-int	ft_puthexadecimal(unsigned long n, int uppercase);
-int	ft_putpointer(void *ptr);
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 42
+# endif
+
+char	*get_next_line(int fd);
+size_t	ft_strlen(const char *s);
+char	*ft_strchr(char *s, int c);
+char	*ft_strjoin(char *stash, char *buffer);
+char	*ft_substr(char *stash, unsigned int start, size_t len);
+char	*ft_strdup(char *stash);
 
 #endif
