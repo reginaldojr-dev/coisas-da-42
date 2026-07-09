@@ -6,11 +6,11 @@
 /*   By: rgoulart <rgoulart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/25 09:04:42 by rgoulart          #+#    #+#             */
-/*   Updated: 2026/07/09 07:39:47 by rgoulart         ###   ########.fr       */
+/*   Updated: 2026/07/09 10:05:24 by rgoulart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "printf.h"
+#include "ft_printf.h"
 
 int	ft_puthexadecimal(unsigned long n, int uppercase)
 {
