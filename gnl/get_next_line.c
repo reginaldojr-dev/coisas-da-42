@@ -3,39 +3,55 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rgoulart <rgoulart@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ifreire <ifreire@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 00:13:17 by rgoulart          #+#    #+#             */
-/*   Updated: 2026/07/09 01:40:06 by rgoulart         ###   ########.fr       */
+/*   Updated: 2026/07/10 12:51:59 by ifreire          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*read_to_stash(int fd, char *stash)
+static char	*fill_stash(int fd, char *stash, char *buf, size_t from)
 {
-	char	*buffer;
 	char	*tmp;
 	int		bytes;
 
+	bytes = read(fd, buf, BUFFER_SIZE);
+	while (bytes > 0)
+	{
+		buf[bytes] = '\0';
+		tmp = ft_strjoin(stash, buf);
+		if (!tmp)
+			return (NULL);
+		stash = tmp;
+		if (ft_strchr(stash + from, '\n'))
+			break ;
+		from += bytes;
+		bytes = read(fd, buf, BUFFER_SIZE);
+	}
+	if (bytes == -1)
+	{
+		free(stash);
+		return (NULL);
+	}
+	return (stash);
+}
+
+static char	*read_to_stash(int fd, char *stash)
+{
+	char	*buffer;
+	size_t	from;
+
+	if (stash && ft_strchr(stash, '\n'))
+		return (stash);
 	buffer = malloc(BUFFER_SIZE + 1);
 	if (!buffer)
 		return (NULL);
-	bytes = 1;
-	while ((stash == NULL || !ft_strchr(stash, '\n')) && bytes > 0)
-	{
-		bytes = read(fd, buffer, BUFFER_SIZE);
-		if (bytes == -1)
-		{
-			free(buffer);
-			return (free(stash), NULL);
-		}
-		buffer[bytes] = '\0';
-		tmp = ft_strjoin(stash, buffer);
-		if (!tmp)
-			return (free(buffer), free(stash), NULL);
-		stash = tmp;
-	}
+	from = 0;
+	if (stash)
+		from = ft_strlen(stash);
+	stash = fill_stash(fd, stash, buffer, from);
 	free(buffer);
 	return (stash);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rgoulart <rgoulart@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ifreire <ifreire@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 00:13:39 by rgoulart          #+#    #+#             */
-/*   Updated: 2026/07/09 02:37:26 by rgoulart         ###   ########.fr       */
+/*   Updated: 2026/07/10 08:03:13 by ifreire          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,10 @@ char	*ft_substr(const char *stash, unsigned int start, size_t len)
 	size_t			i;
 
 	len_stash = ft_strlen(stash);
-	result = len_stash - start;
+	if (start >= len_stash)
+		result = 0;
+	else
+		result = len_stash - start;
 	if (len < result)
 		result = len;
 	ptr = (char *)malloc((result + 1) * sizeof(char));
@@ -91,6 +94,8 @@ char	*ft_strdup(char *stash)
 	size_t	i;
 	char	*ptr;
 
+	if (!stash)
+		return (NULL);
 	len = 0;
 	while (stash[len])
 		len++;
