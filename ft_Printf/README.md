@@ -81,11 +81,11 @@ cc -Wall -Wextra -Werror
 The `Makefile` must include at least the following rules:
 
 ```bash
-make        # builds libftprintf.a
-make all    # builds libftprintf.a
-make clean  # removes object files
-make fclean # removes object files and libftprintf.a
-make re     # rebuilds the project from scratch
+make
+make all
+make clean
+make fclean
+make re
 ```
 
 ### Example of Use
