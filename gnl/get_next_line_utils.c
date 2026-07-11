@@ -6,7 +6,7 @@
 /*   By: rgoulart <rgoulart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 00:13:39 by rgoulart          #+#    #+#             */
-/*   Updated: 2026/07/11 06:13:43 by rgoulart         ###   ########.fr       */
+/*   Updated: 2026/07/11 06:56:48 by rgoulart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,23 +36,23 @@ char	*ft_strchr(const char *s, int c)
 
 char	*ft_strjoin(char *stash, char *buffer)
 {
+	size_t	stash_len;
+	size_t	i;
 	size_t	j;
-	int		i;
 	char	*ptr;
 
-	if (!stash)
-	{
-		stash = (char *)malloc(1);
-		if (!stash)
-			return (NULL);
-		stash[0] = '\0';
-	}
-	ptr = (char *)malloc(ft_strlen(stash) + ft_strlen(buffer) + 1);
+	stash_len = 0;
+	if (stash)
+		stash_len = ft_strlen(stash);
+	ptr = malloc(stash_len + ft_strlen(buffer) + 1);
 	if (!ptr)
 		return (free(stash), NULL);
-	i = -1;
-	while (stash[++i])
+	i = 0;
+	while (i < stash_len)
+	{
 		ptr[i] = stash[i];
+		i++;
+	}
 	j = 0;
 	while (buffer[j])
 		ptr[i++] = buffer[j++];
