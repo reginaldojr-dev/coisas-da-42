@@ -6,60 +6,81 @@
 /*   By: rgoulart <rgoulart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/12 14:04:00 by rgoulart          #+#    #+#             */
-/*   Updated: 2026/07/12 14:44:27 by rgoulart         ###   ########.fr       */
+/*   Updated: 2026/07/12 20:13:30 by rgoulart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-int	get_stack_size(t_stack_node *head)
+static int	*stack_to_array(t_stack_node *head, int size)
 {
-	t_stack_node	*current;
-	int				size;
+	int				*array;
+	int				i;
+	t_stack_node	*curr;
 
-	if (!head)
-		return (0);
-	size = 1;
-	current = head->next;
-	while (current != head)
+	if (!head || size <= 0)
+		return (NULL);
+	array = malloc(sizeof(int) * size);
+	if (!array)
+		return (NULL);
+	i = 0;
+	curr = head;
+	while (i < size)
 	{
-		size++;
-		current = current->next;
+		array[i] = curr->value;
+		curr = curr->next;
+		i++;
 	}
-	return (size);
+	return (array);
 }
 
-static int	count_inversions(t_stack_node *head, t_stack_node *current)
+static double	count_mistakes(int *arr, int size)
 {
-	t_stack_node	*runner;
-	int				inversions;
+	int		i;
+	int		j;
+	double	mistakes;
 
-	inversions = 0;
-	runner = current->next;
-	while (runner != head)
+	mistakes = 0.0;
+	i = 0;
+	while (i < size -1)
 	{
-		if (current->value > runner->value)
-			inversions++;
-		runner = runner->next;
+		j = i + 1;
+		while (j < size)
+		{
+			if (arr[i] > arr[j])
+				mistakes += 1.0;
+			j++;
+		}
+		i++;
 	}
-	return (inversions);
+	return (mistakes);
 }
 
-int	calculate_disorder_metric(t_stack_node *head)
+static double	computate_final_ratio(double mistakes, int size)
 {
-	t_stack_node	*current;
-	int				total_inversions;
+	double	d_size;
+	double	total_pairs;
 
-	if (!head || head->next == head)
-		return (0);
-	total_inversions = 0;
-	current = head;
-	total_inversions += count_inversions(head, current);
-	current = current->next;
-	while (current != head)
-	{
-		total_inversions += count_inversions(head, current);
-		current = current->next;
-	}
-	return (total_inversions);
+	d_size = size;
+	total_pairs = (d_size * (d_size - 1.0)) / 2.0;
+	if (total_pairs == 0.0)
+		return (0.0);
+	return (mistakes / total_pairs);
+}
+
+double	compute_disorder(t_stack_node *a)
+{
+	int		*arr;
+	int		*size;
+	double	mistakes;
+
+	size = get_stack_size(a);
+	if (size <= 1)
+		return (0.0);
+	arr = stack_to_array(a, size);
+	if (!arr)
+		return (0.0);
+	mistakes = count_mistakes(arr, size);
+	free(arr);
+	return (calculate_final_ratio(mistakes, size));
 }
