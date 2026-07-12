@@ -81,7 +81,7 @@ cc -Wall -Wextra -Werror
 The `Makefile` must include at least the following rules:
 
 ```bash
-make
+makefish
 make all
 make clean
 make fclean
