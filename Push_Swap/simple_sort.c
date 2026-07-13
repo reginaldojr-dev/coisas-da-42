@@ -10,24 +10,25 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// simple_sort.c
 #include "push_swap.h"
 
-void	sort_three(t_stack_node **a)
+void	sort_three(t_stack_node **a, t_bench *bench)
 {
 	int	first;
 	int	second;
+	int	third;
 
 	first = (*a)->value;
 	second = (*a)->next->value;
-	if (first > second && first > (*a)->prev->value)
-		ra(a);
-	else if (second > first && second > (*a)->prev->value)
-		rra(a);
+	third = (*a)->prev->value;
+	if (first > second && first > third)
+		ra(a, bench);
+	else if (second > first && second > third)
+		rra(a, bench);
 	first = (*a)->value;
 	second = (*a)->next->value;
 	if (first > second)
-		sa(a);
+		sa(a, bench);
 }
 
 static int	get_min_pos(t_stack_node *head, int min_val)
@@ -61,30 +62,43 @@ static int	find_min_value(t_stack_node *head)
 	return (min);
 }
 
-void	sort_small(t_stack_node **a, t_stack_node **b)
+static void	push_min_to_b(t_stack_node **a, t_stack_node **b, t_bench *bench)
 {
 	int	min;
 	int	size;
 	int	pos;
 
-	while (get_stack_size(*a) > 3)
+	min = find_min_value(*a);
+	size = get_stack_size(*a);
+	pos = get_min_pos(*a, min);
+	if (pos <= size / 2)
 	{
-		min = find_min_value(*a);
-		size = get_stack_size(*a);
-		pos = get_min_pos(*a, min);
-		if (pos <= size / 2)
-		{
-			while ((*a)->value != min)
-				ra(a);
-		}
-		else
-		{
-			while ((*a)->value != min)
-				rra(a);
-		}
-		pb(a, b);
+		while ((*a)->value != min)
+			ra(a, bench);
 	}
-	sort_three(a);
+	else
+	{
+		while ((*a)->value != min)
+			rra(a, bench);
+	}
+	pb(a, b, bench);
+}
+
+void	sort_small(t_stack_node **a, t_stack_node **b, t_bench *bench)
+{
+	int	size;
+
+	size = get_stack_size(*a);
+	if (size == 2)
+	{
+		if ((*a)->value > (*a)->next->value)
+			sa(a, bench);
+		return ;
+	}
+	while (get_stack_size(*a) > 3)
+		push_min_to_b(a, b, bench);
+	if (get_stack_size(*a) == 3)
+		sort_three(a, bench);
 	while (*b)
-		pa(b, a);
+		pa(b, a, bench);
 }

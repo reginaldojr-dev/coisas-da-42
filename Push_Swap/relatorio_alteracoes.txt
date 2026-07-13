@@ -1,0 +1,246 @@
+RELATORIO DAS ALTERACOES PROPOSTAS - PUSH_SWAP
+
+Observacao importante:
+Nenhum arquivo do projeto original foi alterado diretamente por mim. Este relatorio
+resume os codigos e ajustes que foram sugeridos para corrigir os bloqueadores
+encontrados e aproximar o projeto das regras do subject e da Norm da 42.
+
+
+1. ARQUIVOS QUE PRECISAM SER CRIADOS
+
+Foram recomendados dois arquivos novos:
+
+- stack_extra.c
+- bench.c
+
+Motivo:
+O projeto chama funcoes que ainda nao existem nos arquivos enviados, como:
+
+- get_stack_size
+- is_already_sorted
+- parse_to_array
+- fill_stack_from_array
+- init_bench
+- print_benchmark_report
+
+Sem essas funcoes, o projeto nao compila.
+
+
+2. ALTERACOES NO MAKEFILE
+
+O Makefile precisa incluir arquivos que existem, mas nao estavam em SRCS:
+
+- parse_utils.c
+- op_wrappers_both.c
+
+Tambem precisa incluir os novos arquivos:
+
+- stack_extra.c
+- bench.c
+
+SRCS sugerido:
+
+SRCS        = main.c parser.c parse_utils.c stack_utils.c stack_extra.c \
+				op_swap_push.c op_rotate.c op_wrappers_a.c op_wrappers_b.c \
+				op_wrappers_both.c disorder_metric.c indexer.c math_utils.c \
+				simple_sort.c medium_sort.c complex_sort.c bench.c
+
+
+3. ALTERACOES NO PUSH_SWAP.H
+
+O header precisa declarar as funcoes usadas em main.c e nas estrategias.
+
+Prototipos a adicionar ou ajustar:
+
+int				parse_flags(char **argv, int *i, t_bench *bench);
+int				parse_to_array(char **argv, int size, int *array);
+int				fill_stack_from_array(t_stack_node **a, int *array, int size);
+int				is_already_sorted(t_stack_node *a);
+double			compute_disorder(t_stack_node *a);
+
+void			init_bench(t_bench *bench);
+void			print_benchmark_report(t_bench *bench);
+
+void			sort_three(t_stack_node **a, t_bench *bench);
+void			sort_small(t_stack_node **a, t_stack_node **b, t_bench *bench);
+void			medium_sort(t_stack_node **a, t_stack_node **b, t_bench *bench);
+void			complex_sort(t_stack_node **a, t_stack_node **b, t_bench *bench);
+
+O prototipo antigo abaixo deve ser removido ou substituido, pois nao corresponde ao
+codigo implementado:
+
+int				calculate_disorder_metric(t_stack_node *head);
+
+
+4. ALTERACOES NO MAIN.C
+
+O dispatch_strategy deve chamar as funcoes reais:
+
+- sort_small
+- medium_sort
+- complex_sort
+
+E deve passar o ponteiro bench para cada estrategia.
+
+Tambem foi identificado um erro no final do main:
+
+free(stack(&a));
+
+Essa linha deve ser substituida por:
+
+free_stack(&a);
+free_stack(&b);
+
+
+5. ALTERACOES EM SIMPLE_SORT.C
+
+As funcoes devem receber t_bench *bench:
+
+void	sort_three(t_stack_node **a, t_bench *bench);
+void	sort_small(t_stack_node **a, t_stack_node **b, t_bench *bench);
+
+Todas as chamadas de operacoes devem passar bench:
+
+- sa(a, bench)
+- ra(a, bench)
+- rra(a, bench)
+- pb(a, b, bench)
+- pa(b, a, bench)
+
+Tambem foi recomendado:
+
+- remover o comentario // simple_sort.c para evitar problema de Norm;
+- tratar pilha de tamanho 2 diretamente;
+- separar a logica de enviar o menor elemento para b em uma funcao auxiliar.
+
+
+6. ALTERACOES EM MEDIUM_SORT.C
+
+A funcao principal e auxiliares devem receber t_bench *bench.
+
+Assinatura principal:
+
+void	medium_sort(t_stack_node **a, t_stack_node **b, t_bench *bench);
+
+Todas as operacoes devem passar bench:
+
+- pb(a, b, bench)
+- rb(b, bench)
+- ra(a, bench)
+- rrb(b, bench)
+- pa(b, a, bench)
+
+Tambem foi recomendado:
+
+- proteger chunk_size para nunca ficar menor que 1;
+- chamar sort_small quando size <= 5.
+
+
+7. ALTERACOES EM COMPLEX_SORT.C
+
+Foi recomendado substituir a versao atual por uma estrategia radix baseada em indices.
+
+Motivo:
+A versao atual parece ser uma variacao de chunk sort, muito parecida com medium_sort.
+Isso enfraquece a justificativa de que --complex e O(n log n), como o subject exige.
+
+A versao radix usa:
+
+- set_stack_indices
+- leitura dos indices bit a bit
+- ra para bit 1
+- pb para bit 0
+- pa para devolver de b para a
+
+Assinatura principal:
+
+void	complex_sort(t_stack_node **a, t_stack_node **b, t_bench *bench);
+
+
+8. ALTERACOES EM DISORDER_METRIC.C
+
+Foram encontrados erros bloqueantes:
+
+- int *size deveria ser int size
+- calculate_final_ratio era chamada, mas a funcao existente tinha outro nome
+- o header declarava calculate_disorder_metric, mas o .c implementava compute_disorder
+
+A correcao proposta foi padronizar a funcao publica como:
+
+double	compute_disorder(t_stack_node *a);
+
+Essa funcao calcula a metrica obrigatoria de desordem antes de qualquer movimento,
+contando inversoes e dividindo pelo total de pares possiveis.
+
+
+9. ALTERACOES EM PARSE_UTILS.C
+
+Foi recomendado ajustar parse_flags para rejeitar multiplas flags de estrategia.
+
+Exemplo de entrada que deve ser erro:
+
+./push_swap --simple --complex 3 2 1
+
+Motivo:
+O subject exige selecao de estrategia em runtime, mas aceitar multiplas estrategias
+faz o comportamento ficar ambiguo.
+
+
+10. ALTERACOES NO README.MD
+
+O README ja tem boa estrutura, mas precisa explicitar como IA foi usada, pois o
+subject exige essa informacao na secao Resources.
+
+Texto sugerido:
+
+- AI tools were used to review the subject requirements, organize the README
+  structure, identify missing edge cases, and assist with test planning. All
+  generated suggestions were reviewed, adapted, tested, and understood by both
+  contributors before inclusion.
+
+
+11. TESTES NECESSARIOS APOS APLICAR AS ALTERACOES
+
+Depois de aplicar os codigos, ainda e necessario testar:
+
+- make
+- norminette
+- valgrind ou ferramenta equivalente para leaks
+- execucao sem argumentos, que deve imprimir nada
+- entradas invalidas, que devem imprimir Error em stderr
+- duplicados
+- inteiros fora do range de int
+- flags invalidas
+- --simple
+- --medium
+- --complex
+- --adaptive
+- --bench
+- validacao com checker
+
+Benchmarks minimos do subject:
+
+- 100 numeros aleatorios: menos de 2000 operacoes para passar
+- 500 numeros aleatorios: menos de 12000 operacoes para passar
+
+Benchmarks melhores:
+
+- 100 numeros: menos de 1500 para bom desempenho, menos de 700 para excelente
+- 500 numeros: menos de 8000 para bom desempenho, menos de 5500 para excelente
+
+
+12. RESUMO FINAL
+
+As alteracoes propostas corrigem principalmente:
+
+- arquivos ausentes no Makefile
+- funcoes chamadas mas nao implementadas
+- erro de liberacao em main.c
+- inconsistencia entre wrappers de operacoes e estrategias
+- benchmark sem implementacao completa
+- metrica de desordem com erro de tipo/nome
+- estrategia complexa que precisava ficar mais alinhada com O(n log n)
+
+Depois dessas alteracoes, o projeto deve sair do estado "nao compila" para uma base
+testavel. A aprovacao final ainda depende de compilar com -Wall -Wextra -Werror,
+passar na Norm, nao vazar memoria e atingir os limites de operacoes do subject.

@@ -18,8 +18,6 @@ static int	*stack_to_array(t_stack_node *head, int size)
 	int				i;
 	t_stack_node	*curr;
 
-	if (!head || size <= 0)
-		return (NULL);
 	array = malloc(sizeof(int) * size);
 	if (!array)
 		return (NULL);
@@ -42,7 +40,7 @@ static double	count_mistakes(int *arr, int size)
 
 	mistakes = 0.0;
 	i = 0;
-	while (i < size -1)
+	while (i < size - 1)
 	{
 		j = i + 1;
 		while (j < size)
@@ -56,13 +54,11 @@ static double	count_mistakes(int *arr, int size)
 	return (mistakes);
 }
 
-static double	computate_final_ratio(double mistakes, int size)
+static double	calculate_final_ratio(double mistakes, int size)
 {
-	double	d_size;
 	double	total_pairs;
 
-	d_size = size;
-	total_pairs = (d_size * (d_size - 1.0)) / 2.0;
+	total_pairs = ((double)size * ((double)size - 1.0)) / 2.0;
 	if (total_pairs == 0.0)
 		return (0.0);
 	return (mistakes / total_pairs);
@@ -71,7 +67,7 @@ static double	computate_final_ratio(double mistakes, int size)
 double	compute_disorder(t_stack_node *a)
 {
 	int		*arr;
-	int		*size;
+	int		size;
 	double	mistakes;
 
 	size = get_stack_size(a);

@@ -42,13 +42,14 @@ static void	dispatch_strategy(t_stack_node **a, t_stack_node **b, t_bench *bch)
 			strat = 2;
 		else
 			strat = 3;
+		bch->strategy_type = strat;
 	}
 	if (strat == 1)
-		execute_simple_sort(a, b, bch);
+		sort_small(a, b, bch);
 	else if (strat == 2)
-		execute_medium_sort(a, b, bch);
+		medium_sort(a, b, bch);
 	else if (strat == 3)
-		execute_complex_sort(a, b, bch);
+		complex_sort(a, b, bch);
 }
 
 int	main(int argc, char **argv)
@@ -75,6 +76,7 @@ int	main(int argc, char **argv)
 		dispatch_strategy(&a, &b, &bench);
 	if (bench.bench_mode)
 		print_benchmark_report(&bench);
-	free(stack(&a));
+	free_stack(&a);
+	free_stack(&b);
 	return (0);
 }

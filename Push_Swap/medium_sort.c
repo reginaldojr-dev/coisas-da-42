@@ -12,28 +12,31 @@
 
 #include "push_swap.h"
 
-static void	push_chunks_to_b(t_stack_node **a, t_stack_node **b, int size)
+static void	push_chunks_to_b(t_stack_node **a, t_stack_node **b,
+		int size, t_bench *bench)
 {
 	int	chunk_size;
 	int	i;
 
 	chunk_size = ft_sqrt(size) * 14 / 10;
+	if (chunk_size < 1)
+		chunk_size = 1;
 	i = 0;
 	while (*a)
 	{
 		if ((*a)->index <= i)
 		{
-			pb(a, b);
-			rb(b);
+			pb(a, b, bench);
+			rb(b, bench);
 			i++;
 		}
 		else if ((*a)->index <= i + chunk_size)
 		{
-			pb(a, b);
+			pb(a, b, bench);
 			i++;
 		}
 		else
-			ra(a);
+			ra(a, bench);
 	}
 }
 
@@ -52,28 +55,40 @@ static int	find_max_index_pos(t_stack_node *b, int max_idx)
 	return (pos);
 }
 
-void	medium_sort(t_stack_node **a, t_stack_node **b)
+static void	push_max_to_a(t_stack_node **a, t_stack_node **b, t_bench *bench)
 {
 	int	size;
 	int	pos;
+	int	max_idx;
+
+	size = get_stack_size(*b);
+	max_idx = size - 1;
+	pos = find_max_index_pos(*b, max_idx);
+	if (pos <= size / 2)
+	{
+		while ((*b)->index != max_idx)
+			rb(b, bench);
+	}
+	else
+	{
+		while ((*b)->index != max_idx)
+			rrb(b, bench);
+	}
+	pa(b, a, bench);
+}
+
+void	medium_sort(t_stack_node **a, t_stack_node **b, t_bench *bench)
+{
+	int	size;
 
 	set_stack_indices(*a);
 	size = get_stack_size(*a);
-	push_chunks_to_b(a, b, size);
-	while (*b)
+	if (size <= 5)
 	{
-		size = get_stack_size(*b);
-		pos = find_max_index_pos(*b, size -1);
-		if (pos <= size / 2)
-		{
-			while ((*b)->index != size -1)
-				rb(b);
-		}
-		else
-		{
-			while ((*b)->index != size -1)
-				rrb(b);
-		}
-		pa(b, a);
+		sort_small(a, b, bench);
+		return ;
 	}
+	push_chunks_to_b(a, b, size, bench);
+	while (*b)
+		push_max_to_a(a, b, bench);
 }

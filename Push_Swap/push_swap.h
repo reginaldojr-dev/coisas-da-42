@@ -43,12 +43,19 @@ typedef struct s_bench
 	int		strategy_type;
 }	t_bench;
 
+
 int				ft_atoi_strict(const char *str, int *error);
 int				check_duplicates(int *array, int size);
+int				parse_flags(char **argv, int *i, t_bench *bench);
+int				parse_to_array(char **argv, int size, int *array);
+int				fill_stack_from_array(t_stack_node **a, int *array, int size);
+
 t_stack_node	*create_node(int value);
 void			append_node(t_stack_node **head, t_stack_node *new_node);
 void			free_stack(t_stack_node **head);
 int				get_stack_size(t_stack_node *head);
+int				is_already_sorted(t_stack_node *a);
+
 void			swap(t_stack_node **head);
 void			push(t_stack_node **src, t_stack_node **dst);
 void			rotate(t_stack_node **head);
@@ -58,20 +65,26 @@ void			sa(t_stack_node **a, t_bench *bench);
 void			sb(t_stack_node **b, t_bench *bench);
 void			ss(t_stack_node **a, t_stack_node **b, t_bench *bench);
 void			ra(t_stack_node **a, t_bench *bench);
+void			rb(t_stack_node **b, t_bench *bench);
 void			rr(t_stack_node **a, t_stack_node **b, t_bench *bench);
 void			rra(t_stack_node **a, t_bench *bench);
-void			rrr(t_stack_node **a, t_stack_node **b, t_bench *bench);
-void			pb(t_stack_node **a, t_stack_node **b, t_bench *bench);
-void			rb(t_stack_node **b, t_bench *bench);
 void			rrb(t_stack_node **b, t_bench *bench);
+void			rrr(t_stack_node **a, t_stack_node **b, t_bench *bench);
 void			pa(t_stack_node **b, t_stack_node **a, t_bench *bench);
+void			pb(t_stack_node **a, t_stack_node **b, t_bench *bench);
 
-int				calculate_disorder_metric(t_stack_node *head);
+double			compute_disorder(t_stack_node *a);
+void			init_bench(t_bench *bench);
+void			print_benchmark_report(t_bench *bench);
+
 void			set_stack_indices(t_stack_node *head);
 int				ft_sqrt(int number);
-void			sort_three(t_stack_node **a);
-void			sort_small(t_stack_node **a, t_stack_node **b);
-void			medium_sort(t_stack_node **a, t_stack_node **b);
-void			complex_sort(t_stack_node **a, t_stack_node **b);
+
+void			sort_three(t_stack_node **a, t_bench *bench);
+void			sort_small(t_stack_node **a, t_stack_node **b, t_bench *bench);
+void			medium_sort(t_stack_node **a, t_stack_node **b,
+					t_bench *bench);
+void			complex_sort(t_stack_node **a, t_stack_node **b,
+					t_bench *bench);
 
 #endif
