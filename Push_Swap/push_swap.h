@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_swap.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rgoulart <rgoulart@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vde-alme <vde-alme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/12 14:08:18 by rgoulart          #+#    #+#             */
-/*   Updated: 2026/07/12 20:18:30 by rgoulart         ###   ########.fr       */
+/*   Updated: 2026/07/12 21:10:15 by vde-alme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,17 @@ void			push(t_stack_node **src, t_stack_node **dst);
 void			rotate(t_stack_node **head);
 void			reverse_rotate(t_stack_node **head);
 
-void			sa(t_stack_node **a);
-void			ra(t_stack_node **a);
-void			rra(t_stack_node **a);
-void			pb(t_stack_node **a, t_stack_node **b);
-void			rb(t_stack_node **b);
-void			rrb(t_stack_node **b);
-void			pa(t_stack_node **b, t_stack_node **a);
+void			sa(t_stack_node **a, t_bench *bench);
+void			sb(t_stack_node **b, t_bench *bench);
+void			ss(t_stack_node **a, t_stack_node **b, t_bench *bench);
+void			ra(t_stack_node **a, t_bench *bench);
+void			rr(t_stack_node **a, t_stack_node **b, t_bench *bench);
+void			rra(t_stack_node **a, t_bench *bench);
+void			rrr(t_stack_node **a, t_stack_node **b, t_bench *bench);
+void			pb(t_stack_node **a, t_stack_node **b, t_bench *bench);
+void			rb(t_stack_node **b, t_bench *bench);
+void			rrb(t_stack_node **b, t_bench *bench);
+void			pa(t_stack_node **b, t_stack_node **a, t_bench *bench);
 
 int				calculate_disorder_metric(t_stack_node *head);
 void			set_stack_indices(t_stack_node *head);

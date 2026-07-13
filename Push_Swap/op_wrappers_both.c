@@ -1,57 +1,49 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   op_wrappers_a.c                                    :+:      :+:    :+:   */
+/*   op_wrappers_both.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vde-alme <vde-alme@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rgoulart <rgoulart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/12 14:06:39 by rgoulart          #+#    #+#             */
-/*   Updated: 2026/07/12 20:35:43 by vde-alme         ###   ########.fr       */
+/*   Created: 2026/07/12 20:37:15 by vde-alme          #+#    #+#             */
+/*   Updated: 2026/07/12 21:15:45 by rgoulart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	sa(t_stack_node **a, t_bench *bench)
+void	ss(t_stack_node **b, t_stack_node **a, t_bench *bench)
 {
 	swap(a);
+	swap(b);
 	if (bench)
 	{
-		bench->sa++;
+		bench->ss++;
 		bench->total_ops++;
 	}
-	write(1, "sa\n", 3);
+	write(1, "ss\n", 3);
 }
 
-void	ra(t_stack_node **a, t_bench *bench)
+void	rr(t_stack_node **b, t_stack_node **a, t_bench *bench)
 {
 	rotate(a);
+	rotate(b);
 	if (bench)
 	{
-		bench->ra++;
+		bench->rr++;
 		bench->total_ops++;
 	}
-	write(1, "ra\n", 3);
+	write(1, "rr\n", 3);
 }
 
-void	rra(t_stack_node **a, t_bench *bench)
+void	rrr(t_stack_node **b, t_stack_node **a, t_bench *bench)
 {
 	reverse_rotate(a);
+	reverse_rotate(b);
 	if (bench)
 	{
-		bench->rra++;
+		bench->rrr++;
 		bench->total_ops++;
 	}
-	write(1, "rra\n", 4);
-}
-
-void	pb(t_stack_node **a, t_stack_node **b, t_bench *bench)
-{
-	push(a, b);
-	if (bench)
-	{
-		bench->pb++;
-		bench->total_ops++;
-	}
-	write(1, "pb\n", 3);
+	write(1, "rrr\n", 4);
 }

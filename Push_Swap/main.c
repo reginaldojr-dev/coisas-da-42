@@ -6,107 +6,75 @@
 /*   By: rgoulart <rgoulart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/11 04:19:09 by rgoulart          #+#    #+#             */
-/*   Updated: 2026/07/12 19:03:18 by rgoulart         ###   ########.fr       */
+/*   Updated: 2026/07/12 21:15:11 by rgoulart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-static int	is_already_sorted(t_stack_node *head)
+static int	setup_stack(char **argv, int size, t_stack_node **a)
 {
-	t_stack_node	*curr;
+	int	*array;
 
-	if (!head)
-		return (1);
-	curr = head;
-	while (curr->next != head)
-	{
-		if (curr->value > curr->next->value)
-			return (0);
-		curr = curr->next;
-	}
-	return (1);
-}
-
-static void	select_sort_strategy(t_stack_node **a, t_stack_node **b)
-{
-	int	size;
-
-	size = get_stack_size(*a);
-	if (is_already_sorted(*a))
-		return ;
-	if (size == 2)
-		sa(a);
-	else if (size == 3)
-		sort_three(a);
-	else if (size <= 10)
-		sort_small(a, b);
-	else if (size <= 100)
-		medium_sort(a, b);
-	else
-		complex_sort(a, b);
-}
-
-static int	fill_stack_from_array(t_stack_node **a, int *array, int size)
-{
-	int				i;
-	t_stack_node	*new_node;
-
-	i = 0;
-	while (i < size)
-	{
-		new_node = create_node(array[i]);
-		if (!new_node)
-		{
-			return (0);
-		}
-		append_node(a, new_node);
-		i++;
-	}
-	return (1);
-}
-
-static int	parse_to_array(char **argv, int argc, int *array)
-{
-	int	i;
-	int	error;
-
-	i = 1;
-	error = 0;
-	while (i < argc)
-	{
-		array[i - 1] = ft_atoi_strict(argv[i], &error);
-		if (error)
-			return (0);
-		i++;
-	}
-	if (check_duplicates(array, argc - 1))
+	array = malloc(sizeof(int) * size);
+	if (!array)
 		return (0);
+	if (!parse_to_array(argv, size, array)
+		|| !fill_stack_from_array(a, array, size))
+	{
+		free(array);
+		return (0);
+	}
+	free(array);
 	return (1);
+}
+
+static void	dispatch_strategy(t_stack_node **a, t_stack_node **b, t_bench *bch)
+{
+	int	strat;
+
+	strat = bch->strategy_type;
+	if (strat == 0)
+	{
+		if (bch->disorder < 0.2)
+			strat = 1;
+		else if (bch->disorder < 0.5)
+			strat = 2;
+		else
+			strat = 3;
+	}
+	if (strat == 1)
+		execute_simple_sort(a, b, bch);
+	else if (strat == 2)
+		execute_medium_sort(a, b, bch);
+	else if (strat == 3)
+		execute_complex_sort(a, b, bch);
 }
 
 int	main(int argc, char **argv)
 {
 	t_stack_node	*a;
 	t_stack_node	*b;
-	int				*array;
+	t_bench			bench;
+	int				i;
 
 	if (argc < 2)
 		return (0);
 	a = NULL;
 	b = NULL;
-	array = malloc(sizeof(int) * (argc - 1));
-	if (!array || !parse_to_array(argv, argc, array)
-		|| !fill_stack_from_array(&a, array, argc - 1))
+	i = 1;
+	init_bench(&bench);
+	if (!parse_flags(argv, &i, &bench) || i == argc
+		|| !setup_stack(argv + i, argc - i, &a))
 	{
-		free(array);
-		free_stack(&a);
 		write(2, "Error\n", 6);
 		return (1);
 	}
-	free(array);
-	select_sort_strategy(&a, &b);
-	free_stack(&a);
-	free_stack(&b);
+	bench.disorder = compute_disorder(a);
+	if (!is_already_sorted(a))
+		dispatch_strategy(&a, &b, &bench);
+	if (bench.bench_mode)
+		print_benchmark_report(&bench);
+	free(stack(&a));
 	return (0);
 }
