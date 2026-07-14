@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>push_swap - Funcoes e Fluxos</title>
+<style>
+:root{
+  --bg:#10131a;
+  --panel:#181e28;
+  --panel2:#202838;
+  --line:#2d3546;
+  --text:#edeae3;
+  --dim:#a0a8b8;
+  --gold:#e8a33d;
+  --teal:#3dbfae;
+  --red:#e2604f;
+  --mono:'JetBrains Mono','Fira Code',Consolas,monospace;
+  --sans:Inter,'IBM Plex Sans',system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans)}
+body{padding-bottom:70px}
+.wrap{max-width:1240px;margin:0 auto;padding:0 32px}
+.hero{padding:86px 0 56px;border-bottom:1px solid var(--line)}
+.hero .wrap{display:grid;grid-template-columns:1.35fr .85fr;gap:48px;align-items:center}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);display:flex;gap:10px;align-items:center;margin-bottom:18px}
+.eyebrow:before{content:"";display:inline-block;width:22px;height:1px;background:var(--gold)}
+h1{font-family:var(--mono);font-size:44px;line-height:1.12;margin:0 0 18px}
+h1 span{color:var(--teal)}
+.lead{font-size:17px;line-height:1.65;color:var(--dim);max-width:760px}
+section{padding:56px 0;border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:none}
+.head{display:flex;align-items:baseline;gap:16px;margin-bottom:12px}
+.num{font-family:var(--mono);font-size:13px;color:var(--dim)}
+h2{font-family:var(--mono);font-size:26px;margin:0}
+h3{font-family:var(--mono);font-size:18px;margin:28px 0 12px;color:var(--text)}
+p{font-size:15.5px;line-height:1.7;color:#d8d5cd}
+.sub{max-width:850px;color:var(--dim);margin:0 0 28px}
+code{font-family:var(--mono);color:var(--teal);background:#232a38;border-radius:5px;padding:2px 7px;font-size:.92em}
+.callout{border-left:3px solid var(--gold);background:var(--panel);padding:16px 20px;border-radius:0 8px 8px 0;margin:20px 0;color:var(--dim)}
+.callout b{color:var(--gold)}
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:24px 0}
+.flow.compact{grid-template-columns:repeat(4,1fr)}
+.node{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;min-height:122px;position:relative}
+.node:after{content:"->";position:absolute;right:-18px;top:45%;font-family:var(--mono);color:var(--dim)}
+.node:last-child:after{display:none}
+.node.a{border-color:var(--gold)}
+.node.b{border-color:var(--teal)}
+.node.r{border-color:var(--red)}
+.tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.node h3{font-size:14px;margin:8px 0 7px;color:var(--text)}
+.node p{font-size:13px;line-height:1.5;margin:0;color:var(--dim)}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:22px 0}
+.legend div{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:14px}
+.legend b{font-family:var(--mono);color:var(--teal)}
+.legend span{display:block;color:var(--dim);font-size:13px;line-height:1.5;margin-top:6px}
+table{width:100%;border-collapse:collapse;font-size:13.7px;margin:16px 0 28px;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th,td{text-align:left;vertical-align:top;padding:12px 13px;border-bottom:1px solid var(--line)}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);background:#151a23}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#1b2230}
+.fn{font-family:var(--mono);color:var(--teal);white-space:nowrap;font-weight:700}
+.small{font-size:12.5px;color:var(--dim)}
+.pill{display:inline-block;font-family:var(--mono);font-size:11px;color:var(--gold);border:1px solid #5b4630;border-radius:999px;padding:4px 8px;margin:2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px}
+.box h3{margin-top:0}
+.qa{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:22px 0}
+.qacard{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:17px}
+.qacard h3{font-size:14px;color:var(--gold);margin:0 0 9px}
+.qacard p{font-size:13.5px;color:var(--dim);line-height:1.58;margin:0}
+.script{background:#151a23;border:1px solid var(--line);border-radius:10px;padding:18px;margin:18px 0}
+.script ol{margin:0;padding-left:22px}
+.script li{margin:10px 0;color:#d8d5cd;line-height:1.65}
+footer{text-align:center;color:var(--dim);font-family:var(--mono);font-size:12px;padding-top:44px}
+svg text{font-family:var(--mono)}
+@media(max-width:940px){
+  .hero .wrap,.grid2,.flow,.flow.compact{grid-template-columns:1fr}
+  .node:after{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">Mapa de funcoes</div>
+      <h1>push_swap<br><span>quem chama quem</span></h1>
+      <p class="lead">Este relatorio troca a visao por arquivo por uma visao de fluxo. A ideia e entender cada funcao: o que recebe, o que altera, quem chama, quem ela chama e como os dados circulam entre parser, indices, operacoes, algoritmos, benchmark e checker bonus.</p>
+    </div>
+    <svg viewBox="0 0 360 260" xmlns="http://www.w3.org/2000/svg">
+      <rect x="35" y="26" width="290" height="38" rx="8" fill="#181e28" stroke="#e8a33d"/>
+      <text x="180" y="50" fill="#e8a33d" font-size="13" text-anchor="middle">argv -> parse_input</text>
+      <rect x="35" y="82" width="290" height="38" rx="8" fill="#181e28" stroke="#3dbfae"/>
+      <text x="180" y="106" fill="#3dbfae" font-size="13" text-anchor="middle">values -> indices + disorder</text>
+      <rect x="35" y="138" width="290" height="38" rx="8" fill="#181e28" stroke="#e8a33d"/>
+      <text x="180" y="162" fill="#e8a33d" font-size="13" text-anchor="middle">strategy -> sort -> op_apply</text>
+      <rect x="35" y="194" width="290" height="38" rx="8" fill="#181e28" stroke="#3dbfae"/>
+      <text x="180" y="218" fill="#3dbfae" font-size="13" text-anchor="middle">stdin -> checker -> OK / KO</text>
+    </svg>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <div class="head"><span class="num">01</span><h2>Estruturas que conectam tudo</h2></div>
+  <p class="sub">Antes das funcoes, vale entender os tipos que elas passam umas para as outras. Eles sao o "idioma comum" do projeto.</p>
+  <div class="legend">
+    <div><b>t_input</b><span>Usado pelo parser. Guarda <code>values</code>, <code>size</code>, <code>bench</code> e <code>strategy</code>. Depois de validado, alimenta <code>compute_disorder</code>, <code>prepare_indices</code> e <code>init_ctx</code>.</span></div>
+    <div><b>t_stack</b><span>Representa uma pilha em array: <code>data</code>, <code>size</code> e <code>cap</code>. As operacoes mexem diretamente nela.</span></div>
+    <div><b>t_ctx</b><span>Contexto da execucao. Junta <code>a</code>, <code>b</code> e <code>stats</code>. Quase todo algoritmo recebe um <code>t_ctx *</code>.</span></div>
+    <div><b>t_op</b><span>Enum das 11 operacoes: <code>OP_SA</code>, <code>OP_PB</code>, <code>OP_RRA</code> etc. Evita comparar strings dentro dos algoritmos.</span></div>
+    <div><b>t_strategy</b><span>Enum das estrategias: adaptive, simple, medium e complex. Usado por flags, <code>run_strategy</code> e benchmark.</span></div>
+    <div><b>t_stats</b><span>Contadores de operacoes. <code>op_apply</code> incrementa; <code>print_bench</code> le.</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="head"><span class="num">02</span><h2>Fluxo principal do push_swap</h2></div>
+  <p class="sub">Este e o caminho do binario obrigatorio, do terminal ate a lista de operacoes em stdout.</p>
+  <div class="flow">
+    <div class="node a"><div class="tag">1</div><h3>main</h3><p>Recebe <code>argc/argv</code> e chama o parser.</p></div>
+    <div class="node"><div class="tag">2</div><h3>parse_input</h3><p>Preenche <code>t_input</code> com valores e flags.</p></div>
+    <div class="node b"><div class="tag">3</div><h3>compute + indices</h3><p>Calcula disorder e troca valores por ranks.</p></div>
+    <div class="node"><div class="tag">4</div><h3>run_strategy</h3><p>Escolhe qual algoritmo chama.</p></div>
+    <div class="node a"><div class="tag">5</div><h3>op_apply</h3><p>Mexe nas pilhas, imprime e conta operacoes.</p></div>
+  </div>
+
+  <h3>Funcoes do fluxo principal</h3>
+  <table>
+    <tr><th>Funcao</th><th>Recebe / altera</th><th>O que faz</th><th>Comunica com</th></tr>
+    <tr><td class="fn">main</td><td><code>argc</code>, <code>argv</code>, cria <code>t_input</code> e <code>t_ctx</code>.</td><td>Coordena toda a execucao. Se nao houver argumentos, retorna sem saida. Em erro, chama <code>error_exit</code>.</td><td>Chama <code>parse_input</code>, <code>compute_disorder</code>, <code>prepare_indices</code>, <code>init_ctx</code>, <code>run_strategy</code>, <code>print_bench</code>, <code>free_ctx</code>, <code>free_input</code>.</td></tr>
+    <tr><td class="fn">init_ctx</td><td><code>t_ctx *</code> e <code>t_input *</code>.</td><td>Aloca arrays das pilhas A e B, copia os indices para A, zera B e zera contadores.</td><td>Chamado por <code>main</code>. Entrega o <code>ctx</code> pronto para os algoritmos.</td></tr>
+    <tr><td class="fn">free_ctx</td><td><code>t_ctx *</code>.</td><td>Libera os arrays de A e B.</td><td>Chamado no fim do <code>main</code> e em caminhos de erro no checker.</td></tr>
+    <tr><td class="fn">run_strategy</td><td><code>t_ctx *</code>, <code>t_strategy</code>, <code>disorder</code>.</td><td>Evita ordenar se A ja esta ordenada. Caso contrario, despacha para simple, medium, complex ou adaptive.</td><td>Chama <code>is_sorted</code>, <code>sort_simple</code>, <code>sort_medium</code>, <code>sort_complex</code> ou <code>sort_adaptive</code>.</td></tr>
+  </table>
+</section>
+
+<section>
+  <div class="head"><span class="num">03</span><h2>Parser: de texto para inteiros confiaveis</h2></div>
+  <p class="sub">O parser foi quebrado em varias funcoes para controlar tamanho, responsabilidade e Norm. Ele aceita argumentos separados ou strings com varios numeros.</p>
+  <div class="flow compact">
+    <div class="node a"><div class="tag">argv[i]</div><h3>parse_arg</h3><p>Varre um argumento inteiro.</p></div>
+    <div class="node"><div class="tag">token</div><h3>ps_add_token</h3><p>Decide se e flag ou numero.</p></div>
+    <div class="node b"><div class="tag">numero</div><h3>ps_parse_int_token</h3><p>Valida sinal, digitos e overflow.</p></div>
+    <div class="node a"><div class="tag">lista</div><h3>ps_add_value</h3><p>Rejeita duplicados e salva.</p></div>
+  </div>
+
+  <table>
+    <tr><th>Funcao</th><th>Recebe / altera</th><th>O que faz</th><th>Comunica com</th></tr>
+    <tr><td class="fn">init_input</td><td><code>t_input *</code>.</td><td>Inicializa o parser: <code>values = NULL</code>, <code>size = 0</code>, bench desligado e estrategia adaptive.</td><td>Chamado apenas por <code>parse_input</code>.</td></tr>
+    <tr><td class="fn">parse_input</td><td><code>argc</code>, <code>argv</code>, <code>t_input *</code>.</td><td>Percorre cada argumento da linha de comando e valida todos. Retorna 0 em erro.</td><td>Chama <code>init_input</code> e <code>parse_arg</code>. E chamado por <code>main</code>.</td></tr>
+    <tr><td class="fn">parse_arg</td><td>Uma string de argumento, como <code>"1 2 3"</code>.</td><td>Divide o argumento em tokens por espacos. Rejeita argumento vazio ou so com espacos.</td><td>Chama <code>ps_count_tokens</code>, <code>ft_isspace</code> e <code>ps_add_token</code>.</td></tr>
+    <tr><td class="fn">free_input</td><td><code>t_input *</code>.</td><td>Libera <code>values</code> e zera o tamanho.</td><td>Chamado por <code>main</code>, <code>error_exit</code> e <code>checker_error</code>.</td></tr>
+    <tr><td class="fn">ps_count_tokens</td><td>String de argumento.</td><td>Conta quantos blocos nao vazios existem separados por espacos.</td><td>Usa <code>ft_isspace</code>. Ajuda <code>parse_arg</code> e <code>parse_number_arg</code>.</td></tr>
+    <tr><td class="fn">handle_flag</td><td>Token temporariamente terminado em <code>\0</code>.</td><td>Reconhece <code>--bench</code>, <code>--simple</code>, <code>--medium</code>, <code>--complex</code> e <code>--adaptive</code>.</td><td>Chamado por <code>ps_add_token</code>. Altera <code>in->bench</code> ou <code>in->strategy</code>.</td></tr>
+    <tr><td class="fn">restore_token</td><td>Inicio do token, tamanho, caractere salvo e retorno.</td><td>Coloca de volta o caractere que foi trocado por <code>\0</code> e devolve o resultado.</td><td>Usado por <code>ps_add_token</code> para nao deixar <code>argv</code> modificado.</td></tr>
+    <tr><td class="fn">ps_add_token</td><td>Inicio do token, tamanho e <code>t_input *</code>.</td><td>Primeiro tenta flag. Se nao for flag, valida como inteiro e adiciona.</td><td>Chama <code>handle_flag</code>, <code>ps_parse_int_token</code>, <code>ps_add_value</code> e <code>restore_token</code>.</td></tr>
+    <tr><td class="fn">read_sign</td><td>String numerica, tamanho, ponteiros para indice e sinal.</td><td>Le <code>+</code> ou <code>-</code>, ajusta o sinal e garante que existe pelo menos um digito depois.</td><td>Chamado por <code>ps_parse_int_token</code>.</td></tr>
+    <tr><td class="fn">ps_parse_int_token</td><td>Token e tamanho.</td><td>Converte para int sem overflow: antes de multiplicar por 10, compara com o limite permitido.</td><td>Chama <code>read_sign</code>. Entrega o inteiro para <code>ps_add_token</code> ou <code>add_number_token</code>.</td></tr>
+    <tr><td class="fn">reserve_values</td><td><code>t_input *</code> e capacidade necessaria.</td><td>Aloca um novo array maior, copia os valores antigos e libera o array antigo.</td><td>Chamado por <code>ps_add_value</code>.</td></tr>
+    <tr><td class="fn">ps_add_value</td><td><code>t_input *</code> e inteiro validado.</td><td>Procura duplicado; se nao houver, aumenta o array e insere o valor.</td><td>Chama <code>reserve_values</code>. Usado pelo parser normal e pelo parser do checker.</td></tr>
+  </table>
+</section>
+
+<section>
+  <div class="head"><span class="num">04</span><h2>Indices, disorder e verificacao de ordem</h2></div>
+  <p class="sub">Depois do parser, os valores ainda sao os inteiros originais. Esta etapa calcula disorder e troca os valores por ranks, que sao melhores para ordenar.</p>
+  <div class="flow compact">
+    <div class="node a"><div class="tag">values</div><h3>compute_disorder</h3><p>Conta inversoes antes de mexer.</p></div>
+    <div class="node"><div class="tag">copy</div><h3>sort_copy</h3><p>Ordena uma copia dos valores.</p></div>
+    <div class="node b"><div class="tag">rank</div><h3>find_rank</h3><p>Acha a posicao ordenada.</p></div>
+    <div class="node a"><div class="tag">ctx</div><h3>is_sorted</h3><p>Evita movimentos desnecessarios.</p></div>
+  </div>
+
+  <table>
+    <tr><th>Funcao</th><th>Recebe / altera</th><th>O que faz</th><th>Comunica com</th></tr>
+    <tr><td class="fn">sort_copy</td><td>Array de copia e tamanho.</td><td>Ordena a copia com insertion sort.</td><td>Chamado por <code>prepare_indices</code>. Nao altera o input original diretamente.</td></tr>
+    <tr><td class="fn">find_rank</td><td>Copia ordenada, tamanho e valor.</td><td>Retorna em qual posicao o valor aparece na copia ordenada.</td><td>Chamado por <code>prepare_indices</code> para trocar valor por rank.</td></tr>
+    <tr><td class="fn">prepare_indices</td><td><code>t_input *</code>.</td><td>Copia os valores, ordena a copia e substitui cada valor original por seu rank.</td><td>Chama <code>sort_copy</code> e <code>find_rank</code>. Usado por <code>main</code> e <code>checker_bonus</code>.</td></tr>
+    <tr><td class="fn">compute_disorder</td><td>Array de valores e tamanho.</td><td>Conta pares invertidos <code>arr[i] > arr[j]</code> para <code>i &lt; j</code> e divide pelo total de pares.</td><td>Chamado por <code>main</code> antes de <code>prepare_indices</code>.</td></tr>
+    <tr><td class="fn">is_sorted</td><td><code>t_stack *</code>.</td><td>Verifica se <code>data[i - 1] <= data[i]</code> do topo ao fim.</td><td>Usado por <code>run_strategy</code>, <code>sort_small</code> e <code>is_ok</code> no checker.</td></tr>
+  </table>
+</section>
+
+<section>
+  <div class="head"><span class="num">05</span><h2>Operacoes: onde as pilhas mudam de verdade</h2></div>
+  <p class="sub">Os algoritmos nao mexem no array manualmente. Eles chamam operacoes. Isso concentra a logica das pilhas em um lugar.</p>
+  <div class="grid2">
+    <div class="box">
+      <h3>push_swap</h3>
+      <p><code>sort_*</code> chama <code>op_apply</code>. Ela aplica a operacao, incrementa estatisticas e imprime o nome em stdout.</p>
+    </div>
+    <div class="box">
+      <h3>checker</h3>
+      <p><code>checker_run_ops</code> chama <code>checker_apply</code>. Ela usa as mesmas primitivas, mas nao imprime nada.</p>
+    </div>
+  </div>
+
+  <table>
+    <tr><th>Funcao</th><th>Recebe / altera</th><th>O que faz</th><th>Comunica com</th></tr>
+    <tr><td class="fn">op_swap_top</td><td><code>t_stack *</code>.</td><td>Troca <code>data[0]</code> com <code>data[1]</code> se houver pelo menos dois elementos.</td><td>Chamada por <code>op_apply</code> e <code>checker_apply</code>.</td></tr>
+    <tr><td class="fn">op_push_to</td><td>Pilha destino e pilha origem.</td><td>Remove o topo da origem, desloca origem, abre espaco no destino e insere no topo do destino.</td><td>Usada para implementar <code>pa</code> e <code>pb</code>.</td></tr>
+    <tr><td class="fn">op_rotate_up</td><td><code>t_stack *</code>.</td><td>Move o topo para o final do array.</td><td>Usada em <code>ra</code>, <code>rb</code> e <code>rr</code>.</td></tr>
+    <tr><td class="fn">op_rotate_down</td><td><code>t_stack *</code>.</td><td>Move o ultimo elemento para o topo.</td><td>Usada em <code>rra</code>, <code>rrb</code> e <code>rrr</code>.</td></tr>
+    <tr><td class="fn">op_apply</td><td><code>t_ctx *</code> e <code>t_op</code>.</td><td>Traduz o enum em uma ou duas primitivas de pilha, soma contador e escreve a instrucao.</td><td>Chamada por todas as estrategias. Chama <code>op_name</code> para imprimir.</td></tr>
+    <tr><td class="fn">op_name</td><td><code>t_op</code>.</td><td>Retorna <code>"sa\n"</code>, <code>"pb\n"</code>, <code>"rra\n"</code> etc.</td><td>Usada por <code>op_apply</code>, <code>op_from_line</code> e <code>put_op_label</code>.</td></tr>
+  </table>
+</section>
+
+<section>
+  <div class="head"><span class="num">06</span><h2>Algoritmos de ordenacao</h2></div>
+  <p class="sub">Todas as estrategias recebem <code>t_ctx *</code> e so alteram as pilhas por meio de <code>op_apply</code>. Isso garante que toda operacao seja impressa e contada.</p>
+
+  <h3>Small sort</h3>
+  <table>
+    <tr><th>Funcao</th><th>Recebe / altera</th><th>O que faz</th><th>Comunica com</th></tr>
+    <tr><td class="fn">pos_min</td><td><code>t_stack *</code>.</td><td>Retorna a posicao do menor valor na pilha.</td><td>Chamado por <code>sort_small</code>.</td></tr>
+    <tr><td class="fn">move_a_pos_top</td><td><code>t_ctx *</code> e posicao.</td><td>Escolhe <code>ra</code> ou <code>rra</code> conforme a menor distancia ate o topo.</td><td>Chama <code>op_apply</code>.</td></tr>
+    <tr><td class="fn">sort_three</td><td><code>t_ctx *</code>.</td><td>Resolve todas as permutacoes importantes de 3 elementos com poucos movimentos.</td><td>Chama <code>op_apply</code> com <code>sa</code>, <code>ra</code> ou <code>rra</code>.</td></tr>
+    <tr><td class="fn">sort_small</td><td><code>t_ctx *</code>.</td><td>Para ate 5 elementos: envia menores para B, ordena 3, e devolve com <code>pa</code>.</td><td>Chama <code>is_sorted</code>, <code>pos_min</code>, <code>move_a_pos_top</code>, <code>sort_three</code> e <code>op_apply</code>.</td></tr>
+  </table>
+
+  <h3>Chunk sort e adaptive</h3>
+  <div class="flow compact">
+    <div class="node a"><div class="tag">janela</div><h3>sort_chunk_range</h3><p>Empurra faixas de A para B.</p></div>
+    <div class="node"><div class="tag">busca</div><h3>find_next_in_range</h3><p>Acha proximo indice da faixa.</p></div>
+    <div class="node b"><div class="tag">retorno</div><h3>pos_max</h3><p>Acha maior de B.</p></div>
+    <div class="node a"><div class="tag">final</div><h3>pa</h3><p>Reconstrui A crescente.</p></div>
+  </div>
+  <table>
+    <tr><th>Funcao</th><th>Recebe / altera</th><th>O que faz</th><th>Comunica com</th></tr>
+    <tr><td class="fn">int_sqrt</td><td>Inteiro <code>n</code>.</td><td>Calcula raiz inteira simples.</td><td>Usada para dimensionar ranges de <code>sort_simple</code>, <code>sort_medium</code> e <code>sort_adaptive</code>.</td></tr>
+    <tr><td class="fn">find_next_in_range</td><td>Pilha e limite.</td><td>Procura a primeira posicao cujo indice esta dentro da janela atual.</td><td>Usada por <code>sort_chunk_range</code> quando o topo ainda nao esta na faixa.</td></tr>
+    <tr><td class="fn">pos_max</td><td><code>t_stack *</code>.</td><td>Retorna a posicao do maior valor da pilha B.</td><td>Usada no retorno de B para A.</td></tr>
+    <tr><td class="fn">move_b_pos_top</td><td><code>t_ctx *</code> e posicao em B.</td><td>Usa <code>rb</code> ou <code>rrb</code> para trazer o maior de B ao topo com menor distancia.</td><td>Chama <code>op_apply</code>.</td></tr>
+    <tr><td class="fn">sort_chunk_range</td><td><code>t_ctx *</code> e tamanho da janela.</td><td>Fase 1: esvazia A para B por faixas. Fase 2: traz o maior de B para o topo e faz <code>pa</code> ate B esvaziar.</td><td>Chama <code>sort_small</code>, <code>find_next_in_range</code>, <code>move_b_pos_top</code>, <code>pos_max</code> e <code>op_apply</code>.</td></tr>
+    <tr><td class="fn">sort_simple</td><td><code>t_ctx *</code>.</td><td>Calcula um range mais conservador e chama chunk sort.</td><td>Chama <code>int_sqrt</code> e <code>sort_chunk_range</code>.</td></tr>
+    <tr><td class="fn">sort_medium</td><td><code>t_ctx *</code>.</td><td>Calcula range medio, ajustado para bons resultados em 100 e 500.</td><td>Chama <code>int_sqrt</code> e <code>sort_chunk_range</code>.</td></tr>
+    <tr><td class="fn">sort_adaptive</td><td><code>t_ctx *</code> e disorder.</td><td>Se disorder alto, chama complex. Caso contrario escolhe range low/medium e usa chunks.</td><td>Chama <code>sort_complex</code>, <code>int_sqrt</code> e <code>sort_chunk_range</code>.</td></tr>
+  </table>
+
+  <h3>Complex e radix fallback</h3>
+  <table>
+    <tr><th>Funcao</th><th>Recebe / altera</th><th>O que faz</th><th>Comunica com</th></tr>
+    <tr><td class="fn">radix_sort</td><td><code>t_ctx *</code>.</td><td>Para cada bit dos indices, manda zeros para B com <code>pb</code>, gira uns com <code>ra</code> e devolve B com <code>pa</code>.</td><td>Chama <code>op_apply</code>. E fallback para entradas maiores que 500.</td></tr>
+    <tr><td class="fn">sort_complex</td><td><code>t_ctx *</code>.</td><td>Para ate 500 elementos, usa chunks calibrados; acima disso, usa radix.</td><td>Chama <code>sort_small</code>, <code>sort_chunk_range</code> ou <code>radix_sort</code>.</td></tr>
+  </table>
+</section>
+
+<section>
+  <div class="head"><span class="num">07</span><h2>Benchmark e saida auxiliar</h2></div>
+  <p class="sub">Benchmark nunca deve sujar stdout. Por isso todas as mensagens dele vao para stderr.</p>
+  <table>
+    <tr><th>Funcao</th><th>Recebe / altera</th><th>O que faz</th><th>Comunica com</th></tr>
+    <tr><td class="fn">strategy_name</td><td><code>t_strategy</code>.</td><td>Transforma enum em texto: simple, medium, complex ou adaptive.</td><td>Usada por <code>print_bench</code>.</td></tr>
+    <tr><td class="fn">strategy_complexity</td><td><code>t_strategy</code>.</td><td>Retorna a classe teorica declarada da estrategia.</td><td>Usada por <code>print_bench</code>.</td></tr>
+    <tr><td class="fn">put_percent</td><td><code>double</code>.</td><td>Imprime percentual com duas casas, sem printf.</td><td>Usa <code>ft_putnbr_fd</code> e <code>ft_putstr_fd</code>.</td></tr>
+    <tr><td class="fn">put_op_label</td><td><code>t_op</code>.</td><td>Imprime o nome da operacao sem o <code>\n</code> final.</td><td>Chama <code>op_name</code> e <code>write</code>.</td></tr>
+    <tr><td class="fn">print_bench</td><td><code>t_ctx *</code>, estrategia e disorder.</td><td>Escreve relatorio em stderr: estrategia, complexidade, disorder, total e contador por operacao.</td><td>Chama <code>strategy_name</code>, <code>strategy_complexity</code>, <code>put_percent</code>, <code>put_op_label</code> e funcoes de output.</td></tr>
+  </table>
+</section>
+
+<section>
+  <div class="head"><span class="num">08</span><h2>Checker bonus: fluxo e funcoes</h2></div>
+  <p class="sub">O checker recebe a pilha inicial por argv e a sequencia de operacoes por stdin. Ele usa as mesmas primitivas das pilhas, mas sem imprimir cada movimento.</p>
+  <div class="flow">
+    <div class="node a"><div class="tag">argv</div><h3>checker_parse_input</h3><p>Valida apenas numeros.</p></div>
+    <div class="node"><div class="tag">indices</div><h3>prepare_indices</h3><p>Normaliza valores.</p></div>
+    <div class="node b"><div class="tag">stdin</div><h3>checker_read_line</h3><p>Le uma operacao por linha.</p></div>
+    <div class="node"><div class="tag">exec</div><h3>checker_apply</h3><p>Aplica sem imprimir.</p></div>
+    <div class="node a"><div class="tag">fim</div><h3>is_ok</h3><p>Decide OK ou KO.</p></div>
+  </div>
+
+  <h3>Main e parsing do checker</h3>
+  <table>
+    <tr><th>Funcao</th><th>Recebe / altera</th><th>O que faz</th><th>Comunica com</th></tr>
+    <tr><td class="fn">main <span class="small">(checker)</span></td><td><code>argc</code>, <code>argv</code>, <code>t_input</code> e <code>t_ctx</code>.</td><td>Coordena o bonus: parseia, prepara indices, executa stdin, imprime OK/KO.</td><td>Chama <code>checker_parse_input</code>, <code>prepare_indices</code>, <code>init_ctx</code>, <code>checker_run_ops</code>, <code>is_ok</code>, <code>free_ctx</code> e <code>free_input</code>.</td></tr>
+    <tr><td class="fn">init_ctx <span class="small">(checker)</span></td><td><code>t_ctx *</code> e <code>t_input *</code>.</td><td>Aloca A/B e copia os indices para A.</td><td>Mesma ideia do init do push_swap, mas local ao checker.</td></tr>
+    <tr><td class="fn">free_ctx <span class="small">(checker)</span></td><td><code>t_ctx *</code>.</td><td>Libera pilhas do checker.</td><td>Chamado antes de sair.</td></tr>
+    <tr><td class="fn">checker_error</td><td><code>t_input *</code>.</td><td>Libera input, imprime <code>Error</code> em stderr e encerra.</td><td>Usado em parse invalido, alocacao falha ou operacao invalida.</td></tr>
+    <tr><td class="fn">is_ok</td><td><code>t_ctx *</code>.</td><td>Retorna verdadeiro se B esta vazia e A esta ordenada.</td><td>Chama <code>is_sorted</code>.</td></tr>
+    <tr><td class="fn">add_number_token</td><td>Token do checker e <code>t_input *</code>.</td><td>Valida um token como numero e adiciona no input.</td><td>Chama <code>ps_parse_int_token</code> e <code>ps_add_value</code>.</td></tr>
+    <tr><td class="fn">parse_number_arg</td><td>Um argumento do checker.</td><td>Divide argumento em tokens numericos. Nao aceita flags.</td><td>Chama <code>ps_count_tokens</code>, <code>ft_isspace</code> e <code>add_number_token</code>.</td></tr>
+    <tr><td class="fn">checker_parse_input</td><td><code>argc</code>, <code>argv</code>, <code>t_input *</code>.</td><td>Inicializa input e parseia todos os argumentos como numeros.</td><td>Chama <code>parse_number_arg</code>. Usado pelo <code>main</code> do checker.</td></tr>
+  </table>
+
+  <h3>Leitura e execucao do stdin</h3>
+  <table>
+    <tr><th>Funcao</th><th>Recebe / altera</th><th>O que faz</th><th>Comunica com</th></tr>
+    <tr><td class="fn">init_line</td><td>Ponteiro para linha e capacidade.</td><td>Cria buffer inicial de 32 bytes para ler uma linha.</td><td>Chamado por <code>checker_read_line</code>.</td></tr>
+    <tr><td class="fn">grow_line</td><td>Buffer, capacidade e tamanho atual.</td><td>Se o buffer estiver pequeno, aloca o dobro, copia conteudo e libera o antigo.</td><td>Chamado durante a leitura de stdin.</td></tr>
+    <tr><td class="fn">checker_read_line</td><td><code>char **line</code>.</td><td>Le do fd 0 ate <code>\n</code> ou EOF. Retorna tamanho, 0 em EOF sem dados ou -1 em erro.</td><td>Usa <code>read</code>, <code>init_line</code> e <code>grow_line</code>. Chamado por <code>checker_run_ops</code>.</td></tr>
+    <tr><td class="fn">op_from_line</td><td>Linha lida e ponteiro para <code>t_op</code>.</td><td>Compara a linha com os nomes validos de operacao e converte para enum.</td><td>Chama <code>op_name</code> e <code>ft_streq</code>.</td></tr>
+    <tr><td class="fn">checker_apply</td><td><code>t_ctx *</code> e <code>t_op</code>.</td><td>Aplica a operacao nas pilhas sem imprimir e sem contar benchmark.</td><td>Chama <code>op_swap_top</code>, <code>op_push_to</code>, <code>op_rotate_up</code> e <code>op_rotate_down</code>.</td></tr>
+    <tr><td class="fn">checker_run_ops</td><td><code>t_ctx *</code>.</td><td>Loop principal do stdin: le linha, valida operacao, aplica e libera a linha.</td><td>Chama <code>checker_read_line</code>, <code>op_from_line</code> e <code>checker_apply</code>.</td></tr>
+  </table>
+</section>
+
+<section>
+  <div class="head"><span class="num">09</span><h2>Funcoes utilitarias</h2></div>
+  <p class="sub">Essas funcoes pequenas existem para evitar dependencias externas e manter o comportamento controlado.</p>
+  <table>
+    <tr><th>Funcao</th><th>Recebe / altera</th><th>O que faz</th><th>Comunica com</th></tr>
+    <tr><td class="fn">ft_isspace</td><td>Um caractere.</td><td>Retorna verdadeiro para espacos aceitos pelo parser: espaco, tab, newline, vertical tab, form feed e carriage return.</td><td>Usada pelos parsers.</td></tr>
+    <tr><td class="fn">ft_streq</td><td>Duas strings.</td><td>Compara igualdade exata, incluindo fim de string.</td><td>Usada em flags, checker e nomes de operacao.</td></tr>
+    <tr><td class="fn">ft_strlen</td><td>String.</td><td>Conta caracteres ate <code>\0</code>.</td><td>Usada por <code>ft_putstr_fd</code>.</td></tr>
+    <tr><td class="fn">ft_putstr_fd</td><td>Fd e string.</td><td>Escreve a string no fd informado usando <code>write</code>.</td><td>Usada em erro, operacoes, benchmark e checker.</td></tr>
+    <tr><td class="fn">ft_putnbr_fd</td><td>Fd e numero long.</td><td>Imprime numero sem printf, inclusive negativo.</td><td>Usada pelo benchmark.</td></tr>
+    <tr><td class="fn">error_exit</td><td><code>t_input *</code>.</td><td>Libera input, imprime <code>Error</code> em stderr e encerra com codigo 1.</td><td>Usada pelo <code>main</code> do push_swap.</td></tr>
+  </table>
+</section>
+
+<section>
+  <div class="head"><span class="num">10</span><h2>Defesa do projeto</h2></div>
+  <p class="sub">Esta parte e um roteiro pratico para apresentar o projeto na avaliacao. A ideia nao e decorar codigo, e conseguir explicar o caminho dos dados, as escolhas tecnicas e os pontos que o avaliador provavelmente vai testar.</p>
+
+  <h3>Explicacao curta do projeto</h3>
+  <p>O <code>push_swap</code> e um programa que recebe uma lista de inteiros pela linha de comando e precisa ordenar essa lista usando somente duas pilhas, A e B, e onze operacoes permitidas: <code>sa</code>, <code>sb</code>, <code>ss</code>, <code>pa</code>, <code>pb</code>, <code>ra</code>, <code>rb</code>, <code>rr</code>, <code>rra</code>, <code>rrb</code> e <code>rrr</code>. A saida do programa nao e a lista final ordenada; a saida e uma sequencia de instrucoes, uma por linha. Se essa sequencia for executada por um checker, A deve terminar ordenada em ordem crescente e B deve terminar vazia.</p>
+  <p>Nesta implementacao, primeiro eu valido toda a entrada, rejeitando tokens invalidos, numeros fora de <code>int</code> e duplicados. Depois calculo o <code>disorder</code>, que e a proporcao de pares invertidos. Em seguida, transformo os valores em indices ordenados: o menor vira 0, o segundo menor vira 1, e assim por diante. Isso facilita os algoritmos, porque eles passam a trabalhar com uma faixa compacta de <code>0</code> ate <code>n - 1</code>, independentemente dos valores originais.</p>
+  <p>Depois dessa preparacao, o programa escolhe uma estrategia: <code>simple</code>, <code>medium</code>, <code>complex</code> ou <code>adaptive</code>. As estrategias geram movimentos chamando <code>op_apply</code>, que e a funcao responsavel por alterar as pilhas, imprimir a operacao em stdout e contar o movimento para o benchmark.</p>
+
+  <h3>Roteiro de fala em 2 minutos</h3>
+  <div class="script">
+    <ol>
+      <li><strong>Comeco:</strong> "Meu projeto recebe inteiros, valida tudo e gera operacoes Push_swap para ordenar a pilha A usando a pilha B."</li>
+      <li><strong>Parser:</strong> "O parser aceita argumentos separados e strings com varios numeros. Ele rejeita vazio, caracteres invalidos, overflow e duplicados, inclusive <code>0</code> com <code>+0</code> ou <code>-0</code>."</li>
+      <li><strong>Normalizacao:</strong> "Antes de ordenar, eu transformo valores em indices. Isso deixa a logica independente de numeros grandes, negativos ou misturados."</li>
+      <li><strong>Disorder:</strong> "Eu calculo inversoes antes de qualquer movimento. Esse valor guia o modo adaptive e tambem aparece no bench."</li>
+      <li><strong>Operacoes:</strong> "As estrategias nunca mexem no array diretamente. Elas chamam <code>op_apply</code>, que aplica a operacao, imprime e atualiza contadores."</li>
+      <li><strong>Algoritmos:</strong> "Pequenos usam casos diretos; listas maiores usam chunks. O complex usa chunks calibrados ate 500 e radix como fallback para entradas maiores."</li>
+      <li><strong>Bonus:</strong> "O checker recebe a mesma pilha inicial, le operacoes do stdin, executa sem imprimir e responde <code>OK</code> se A ficou ordenada e B vazia."</li>
+    </ol>
+  </div>
+
+  <h3>Comunicacao entre as partes</h3>
+  <div class="flow">
+    <div class="node a"><div class="tag">validar</div><h3>parse_input</h3><p>Transforma texto em <code>t_input</code> confiavel.</p></div>
+    <div class="node"><div class="tag">medir</div><h3>compute_disorder</h3><p>Conta inversoes antes dos movimentos.</p></div>
+    <div class="node b"><div class="tag">normalizar</div><h3>prepare_indices</h3><p>Troca valores reais por ranks.</p></div>
+    <div class="node"><div class="tag">decidir</div><h3>run_strategy</h3><p>Escolhe e chama a estrategia correta.</p></div>
+    <div class="node a"><div class="tag">executar</div><h3>op_apply</h3><p>Altera pilhas, imprime operacao e conta.</p></div>
+  </div>
+  <p>No bonus, a comunicacao muda um pouco: <code>checker_parse_input</code> valida apenas numeros; <code>checker_read_line</code> le uma operacao; <code>op_from_line</code> converte texto em enum; <code>checker_apply</code> executa a operacao sem imprimir; e <code>is_ok</code> verifica o estado final.</p>
+  <div class="callout"><b>Frase de defesa:</b> "O push_swap calcula e imprime a receita; o checker le a receita, executa silenciosamente e verifica se A ficou ordenada com B vazia."</div>
+
+  <h3>Perguntas provaveis dos avaliadores</h3>
+  <div class="qa">
+    <div class="qacard"><h3>Por que transformar valores em indices?</h3><p>Porque os algoritmos nao precisam saber se o valor original era <code>-2147483648</code> ou <code>454</code>. Eles so precisam da ordem relativa. Com indices, todo valor vira um rank entre <code>0</code> e <code>n - 1</code>, o que simplifica chunks e radix.</p></div>
+    <div class="qacard"><h3>Como voce detecta duplicados?</h3><p>Depois de converter o token para inteiro, <code>ps_add_value</code> percorre os valores ja salvos. Se encontrar o mesmo inteiro, retorna erro. Por isso <code>0</code>, <code>+0</code> e <code>-0</code> sao tratados como duplicados.</p></div>
+    <div class="qacard"><h3>Como evita overflow no parser?</h3><p><code>ps_parse_int_token</code> acumula em <code>long</code>, mas antes de fazer <code>n = n * 10 + digito</code> compara se essa conta passaria do limite. Para negativo, o limite permitido e <code>2147483648</code>, porque <code>INT_MIN</code> existe.</p></div>
+    <div class="qacard"><h3>O que e disorder?</h3><p>E a quantidade de pares invertidos dividida pelo total de pares possiveis. Se a lista ja esta ordenada, disorder e 0. Se esta reversa, e 1. Ele e calculado antes de qualquer movimento.</p></div>
+    <div class="qacard"><h3>Por que stdout e stderr separados?</h3><p>Stdout precisa conter apenas operacoes validas, porque pode ser enviado para o checker. Erros e benchmark vao para stderr para nao quebrar a sequencia de instrucoes.</p></div>
+    <div class="qacard"><h3>O que acontece se a entrada ja estiver ordenada?</h3><p><code>run_strategy</code> chama <code>is_sorted</code>. Se A ja esta crescente, nao chama nenhum algoritmo e imprime zero operacoes, como o subject pede.</p></div>
+    <div class="qacard"><h3>Por que existe <code>op_apply</code>?</h3><p>Para centralizar as operacoes do push_swap. Ela aplica a mudanca nas pilhas, imprime o nome da operacao e atualiza estatisticas. Assim os algoritmos nao duplicam essa logica.</p></div>
+    <div class="qacard"><h3>Por que o checker usa <code>checker_apply</code> e nao <code>op_apply</code>?</h3><p>Porque o checker nao deve imprimir as operacoes novamente. Ele so executa a entrada recebida. Por isso reaproveita as primitivas de pilha, mas de forma silenciosa.</p></div>
+    <div class="qacard"><h3>Como funciona a estrategia de chunks?</h3><p>A ideia e mandar para B valores dentro de uma janela de indices. Depois, enquanto B nao esta vazia, o algoritmo traz o maior de B para o topo e faz <code>pa</code>. Como os maiores voltam primeiro para o topo, A fica ordenada no final.</p></div>
+    <div class="qacard"><h3>Qual a diferenca entre simple, medium e complex?</h3><p>Todos precisam existir por causa do subject. O simple usa uma janela mais conservadora; o medium usa uma janela ajustada para bom desempenho geral; o complex usa parametros calibrados para competir melhor ate 500 e radix como fallback.</p></div>
+    <div class="qacard"><h3>Como o adaptive decide?</h3><p>Ele usa o disorder. Para alta desordem chama complex. Para baixa e media desordem usa chunks com ranges diferentes, tentando reduzir operacoes conforme o perfil da entrada.</p></div>
+    <div class="qacard"><h3>Como o checker decide OK ou KO?</h3><p>Depois de ler todas as operacoes, ele verifica duas condicoes: A precisa estar ordenada e B precisa estar vazia. Se ambas forem verdadeiras, imprime <code>OK</code>; caso contrario, <code>KO</code>.</p></div>
+    <div class="qacard"><h3>O que acontece com operacao invalida no checker?</h3><p><code>op_from_line</code> tenta converter a linha para uma das onze operacoes. Se nao bater com nenhuma, <code>checker_run_ops</code> retorna erro e o programa imprime <code>Error</code> em stderr.</p></div>
+    <div class="qacard"><h3>Por que usar arrays em vez de lista ligada?</h3><p>Para este tamanho de projeto e testes, array simplifica a implementacao e a explicacao: o topo e sempre <code>data[0]</code>. Push e rotate deslocam elementos, mas a logica fica direta e facil de validar.</p></div>
+    <div class="qacard"><h3>Onde a memoria e liberada?</h3><p><code>free_input</code> libera os valores parseados. <code>free_ctx</code> libera as pilhas A e B. Em erro, <code>error_exit</code> ou <code>checker_error</code> liberam o que foi alocado antes de sair.</p></div>
+  </div>
+
+  <h3>Testes bons para mostrar na defesa</h3>
+  <table>
+    <tr><th>Teste</th><th>Comando</th><th>O que prova</th></tr>
+    <tr><td>Sem argumentos</td><td><code>./push_swap</code></td><td>Nao imprime nada.</td></tr>
+    <tr><td>Entrada ja ordenada</td><td><code>./push_swap 1 2 3 4 | wc -l</code></td><td>Gera zero operacoes.</td></tr>
+    <tr><td>Erro de duplicado</td><td><code>./push_swap 1 2 2</code></td><td>Imprime <code>Error</code> em stderr.</td></tr>
+    <tr><td>Erro de overflow</td><td><code>./push_swap 2147483648</code></td><td>Rejeita valor fora de <code>int</code>.</td></tr>
+    <tr><td>Checker bonus</td><td><code>ARG="3 2 1"; ./push_swap $ARG | ./checker $ARG</code></td><td>Mostra que a receita gerada realmente ordena.</td></tr>
+    <tr><td>Bench sem sujar stdout</td><td><code>./push_swap --bench 3 2 1 &gt; ops.txt</code></td><td>Operacoes vao para stdout; relatorio vai para stderr.</td></tr>
+  </table>
+</section>
+
+</div>
+<footer>push_swap - relatorio por funcao e fluxo - fresh_push_swap</footer>
+</body>
+</html>
