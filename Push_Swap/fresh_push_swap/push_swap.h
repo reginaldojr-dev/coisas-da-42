@@ -57,6 +57,7 @@ typedef struct s_ctx
 }	t_ctx;
 
 int			parse_input(int argc, char **argv, t_input *in);
+int			checker_parse_input(int argc, char **argv, t_input *in);
 void		free_input(t_input *in);
 int			ps_count_tokens(char *s);
 int			ps_add_token(char *start, int len, t_input *in);
@@ -67,7 +68,15 @@ double		compute_disorder(int *arr, int n);
 int			is_sorted(t_stack *s);
 void		error_exit(t_input *in);
 
+void		op_swap_top(t_stack *s);
+void		op_push_to(t_stack *dst, t_stack *src);
+void		op_rotate_up(t_stack *s);
+void		op_rotate_down(t_stack *s);
+const char	*op_name(t_op op);
 void		op_apply(t_ctx *ctx, t_op op);
+void		checker_apply(t_ctx *ctx, t_op op);
+int			checker_run_ops(t_ctx *ctx);
+int			checker_read_line(char **line);
 void		sort_small(t_ctx *ctx);
 void		sort_simple(t_ctx *ctx);
 void		sort_medium(t_ctx *ctx);

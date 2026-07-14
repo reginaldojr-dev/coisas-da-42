@@ -1,9 +1,5 @@
 #include "push_swap.h"
 
-static const char	*g_ops[11] = {
-	"sa", "sb", "ss", "pa", "pb", "ra", "rb", "rr", "rra", "rrb", "rrr"
-};
-
 const char	*strategy_name(t_strategy strategy)
 {
 	if (strategy == STRAT_SIMPLE)
@@ -39,6 +35,20 @@ static void	put_percent(double value)
 	ft_putstr_fd(2, "%");
 }
 
+static void	put_op_label(t_op op)
+{
+	const char	*name;
+	int			i;
+
+	name = op_name(op);
+	i = 0;
+	while (name[i] && name[i] != '\n')
+	{
+		write(2, &name[i], 1);
+		i++;
+	}
+}
+
 void	print_bench(t_ctx *ctx, t_strategy strategy, double disorder)
 {
 	int	i;
@@ -56,7 +66,7 @@ void	print_bench(t_ctx *ctx, t_strategy strategy, double disorder)
 	while (i < 11)
 	{
 		ft_putstr_fd(2, "[bench] ");
-		ft_putstr_fd(2, g_ops[i]);
+		put_op_label((t_op)i);
 		ft_putstr_fd(2, ": ");
 		ft_putnbr_fd(2, ctx->stats.count[i]);
 		ft_putstr_fd(2, "\n");
