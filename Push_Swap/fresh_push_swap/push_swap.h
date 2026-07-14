@@ -72,6 +72,7 @@ void		sort_small(t_ctx *ctx);
 void		sort_simple(t_ctx *ctx);
 void		sort_medium(t_ctx *ctx);
 void		sort_complex(t_ctx *ctx);
+void		sort_chunk_range(t_ctx *ctx, int range);
 void		sort_adaptive(t_ctx *ctx, double disorder);
 
 void		print_bench(t_ctx *ctx, t_strategy strategy, double disorder);

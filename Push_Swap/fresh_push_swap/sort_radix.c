@@ -1,6 +1,6 @@
 #include "push_swap.h"
 
-void	sort_complex(t_ctx *ctx)
+static void	radix_sort(t_ctx *ctx)
 {
 	int	max;
 	int	bits;
@@ -33,4 +33,24 @@ void	sort_complex(t_ctx *ctx)
 			op_apply(ctx, OP_PA);
 		bit++;
 	}
+}
+
+void	sort_complex(t_ctx *ctx)
+{
+	int	range;
+
+	if (ctx->a.size <= 5)
+	{
+		sort_small(ctx);
+		return ;
+	}
+	if (ctx->a.size <= 500)
+	{
+		range = 14;
+		if (ctx->a.size > 200)
+			range = 32;
+		sort_chunk_range(ctx, range);
+		return ;
+	}
+	radix_sort(ctx);
 }

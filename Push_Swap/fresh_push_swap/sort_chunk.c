@@ -50,7 +50,7 @@ static void	move_b_pos_top(t_ctx *ctx, int pos)
 			op_apply(ctx, OP_RRB);
 }
 
-static void	chunk_sort(t_ctx *ctx, int range)
+void	sort_chunk_range(t_ctx *ctx, int range)
 {
 	int	pushed;
 	int	pos;
@@ -100,7 +100,7 @@ void	sort_simple(t_ctx *ctx)
 	range = int_sqrt(ctx->a.size) * 2;
 	if (range < 10)
 		range = 10;
-	chunk_sort(ctx, range);
+	sort_chunk_range(ctx, range);
 }
 
 void	sort_medium(t_ctx *ctx)
@@ -110,7 +110,7 @@ void	sort_medium(t_ctx *ctx)
 	range = int_sqrt(ctx->a.size) * 14 / 10 + 2;
 	if (range < 8)
 		range = 8;
-	chunk_sort(ctx, range);
+	sort_chunk_range(ctx, range);
 }
 
 void	sort_adaptive(t_ctx *ctx, double disorder)
@@ -125,5 +125,5 @@ void	sort_adaptive(t_ctx *ctx, double disorder)
 		range = int_sqrt(ctx->a.size) * 14 / 10 + 2;
 	if (range < 8)
 		range = 8;
-	chunk_sort(ctx, range);
+	sort_chunk_range(ctx, range);
 }
