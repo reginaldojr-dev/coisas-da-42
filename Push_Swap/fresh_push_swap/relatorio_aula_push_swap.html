@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>push_swap - Relatorio Aula</title>
+<style>
+:root{
+  --bg:#12151c;
+  --panel:#1a1f29;
+  --panel2:#202733;
+  --line:#2b3242;
+  --text:#edeae3;
+  --dim:#9aa2b1;
+  --gold:#e8a33d;
+  --teal:#3dbfae;
+  --red:#e2604f;
+  --mono:'JetBrains Mono','Fira Code',Consolas,monospace;
+  --sans:Inter,'IBM Plex Sans',system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans)}
+body{padding-bottom:70px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 32px}
+.hero{padding:88px 0 58px;border-bottom:1px solid var(--line);overflow:hidden}
+.hero .wrap{display:flex;gap:54px;align-items:center;flex-wrap:wrap}
+.hero-text{flex:1 1 430px}
+.hero-visual{flex:0 0 390px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);display:flex;gap:10px;align-items:center;margin-bottom:18px}
+.eyebrow:before{content:"";display:inline-block;width:22px;height:1px;background:var(--gold)}
+h1{font-family:var(--mono);font-size:44px;line-height:1.12;margin:0 0 18px;font-weight:700}
+h1 span{color:var(--teal)}
+.lead{font-size:17px;line-height:1.65;color:var(--dim);max-width:620px}
+section{padding:62px 0;border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:none}
+.section-head{display:flex;align-items:baseline;gap:16px;margin-bottom:12px}
+.num{font-family:var(--mono);font-size:13px;color:var(--dim)}
+h2{font-family:var(--mono);font-size:26px;margin:0}
+h3{font-family:var(--mono)}
+p{font-size:15.5px;line-height:1.72;color:#d8d5cd}
+.sub{max-width:790px;color:var(--dim);margin:0 0 32px}
+code{font-family:var(--mono);color:var(--teal);background:#232a38;border-radius:5px;padding:2px 7px;font-size:.92em}
+.callout{border-left:3px solid var(--gold);background:var(--panel);padding:16px 20px;border-radius:0 8px 8px 0;margin:22px 0;color:var(--dim)}
+.callout b{color:var(--gold)}
+.callout.alert{border-left-color:var(--red)}
+.callout.alert b{color:var(--red)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:28px;margin:24px 0;overflow-x:auto}
+.flowline{display:grid;grid-template-columns:1fr 42px 1fr 42px 1fr;gap:12px;align-items:stretch;margin:26px 0}
+.arrow{display:flex;align-items:center;justify-content:center;color:var(--dim);font-family:var(--mono);font-size:24px}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;min-height:118px}
+.step.a{border-color:var(--gold)}
+.step.b{border-color:var(--teal)}
+.step.err{border-color:var(--red)}
+.tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.step h3{font-size:15px;margin:9px 0 7px}
+.step p{font-size:13.5px;margin:0;color:var(--dim);line-height:1.5}
+.filegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:24px 0}
+.filecard{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:16px 18px}
+.fname{font-family:var(--mono);color:var(--teal);font-weight:700;font-size:13.5px}
+.fdesc{font-size:13px;color:var(--dim);line-height:1.5;margin-top:7px}
+table{width:100%;border-collapse:collapse;font-size:14.5px;margin:20px 0}
+th,td{text-align:left;vertical-align:top;padding:12px 14px;border-bottom:1px solid var(--line)}
+th{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
+tr:hover{background:#181d27}
+.vertical{display:grid;gap:12px;max-width:960px;margin:28px auto}
+.row{display:grid;grid-template-columns:54px 1fr;gap:14px;align-items:start}
+.idx{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#232a38;border:1px solid var(--line);font-family:var(--mono);color:var(--gold);font-weight:700;margin-top:10px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:16px 18px;position:relative}
+.box:before{content:"";position:absolute;left:-36px;top:31px;width:28px;height:1px;background:var(--line)}
+.box h3{font-size:14px;margin:0 0 7px}
+.box p{font-size:13.5px;color:var(--dim);margin:0}
+.decision{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:22px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:17px}
+.range{font-family:var(--mono);font-size:13px;color:var(--gold);font-weight:700}
+.card h3{font-size:15px;margin:8px 0}
+.card p{font-size:13px;color:var(--dim);margin:0}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:15px;text-align:center}
+.kpi b{display:block;font-family:var(--mono);color:var(--teal);font-size:18px}
+.kpi span{font-size:11px;color:var(--dim)}
+.lesson{counter-reset:item}
+.lesson li{margin:10px 0;color:#d8d5cd;line-height:1.65}
+footer{text-align:center;color:var(--dim);font-family:var(--mono);font-size:12px;padding-top:44px}
+svg text{font-family:var(--mono)}
+@media(max-width:840px){
+  .flowline,.decision,.kpis{grid-template-columns:1fr}
+  .arrow{transform:rotate(90deg);height:26px}
+  .hero-visual{flex-basis:100%}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="hero-text">
+      <div class="eyebrow">Relatorio Aula</div>
+      <h1>push_swap<br><span>da entrada ao checker bonus</span></h1>
+      <p class="lead">Este material explica a solucao criada do zero em C: como os argumentos sao validados, como os valores viram indices, como as pilhas A e B sao manipuladas, como cada estrategia ordena e como o bonus <strong>checker</strong> confere se a sequencia de operacoes realmente funciona.</p>
+    </div>
+    <div class="hero-visual">
+      <svg viewBox="0 0 390 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 Z" fill="#9aa2b1"/>
+          </marker>
+        </defs>
+        <text x="72" y="26" fill="#9aa2b1" font-size="12" text-anchor="middle">STACK A</text>
+        <g>
+          <rect x="22" y="38" width="100" height="34" rx="6" fill="none" stroke="#e8a33d" stroke-width="2"/>
+          <text x="72" y="60" fill="#e8a33d" font-size="15" text-anchor="middle" font-weight="700">12</text>
+          <rect x="22" y="76" width="100" height="34" rx="6" fill="none" stroke="#e8a33d" stroke-width="2" opacity=".85"/>
+          <text x="72" y="98" fill="#e8a33d" font-size="15" text-anchor="middle">2</text>
+          <rect x="22" y="114" width="100" height="34" rx="6" fill="none" stroke="#e8a33d" stroke-width="2" opacity=".62"/>
+          <text x="72" y="136" fill="#e8a33d" font-size="15" text-anchor="middle">454</text>
+          <rect x="22" y="152" width="100" height="34" rx="6" fill="none" stroke="#e8a33d" stroke-width="2" opacity=".42"/>
+          <text x="72" y="174" fill="#e8a33d" font-size="15" text-anchor="middle">7</text>
+        </g>
+        <path d="M136 68 H206" stroke="#9aa2b1" stroke-width="1.4" fill="none" marker-end="url(#arrow)"/>
+        <text x="171" y="58" fill="#9aa2b1" font-size="11" text-anchor="middle">pb</text>
+        <path d="M206 226 H136" stroke="#9aa2b1" stroke-width="1.4" fill="none" marker-end="url(#arrow)"/>
+        <text x="171" y="216" fill="#9aa2b1" font-size="11" text-anchor="middle">pa</text>
+        <text x="268" y="198" fill="#9aa2b1" font-size="12" text-anchor="middle">STACK B</text>
+        <g>
+          <rect x="218" y="210" width="100" height="34" rx="6" fill="none" stroke="#3dbfae" stroke-width="2"/>
+          <text x="268" y="232" fill="#3dbfae" font-size="15" text-anchor="middle" font-weight="700">5</text>
+          <rect x="218" y="248" width="100" height="34" rx="6" fill="none" stroke="#3dbfae" stroke-width="2" opacity=".62"/>
+          <text x="268" y="270" fill="#3dbfae" font-size="15" text-anchor="middle">8</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <div class="section-head"><span class="num">01</span><h2>Ideia central do projeto</h2></div>
+  <p class="sub">O programa nao imprime a lista ordenada. Ele imprime uma receita de movimentos que, quando executada sobre duas pilhas, deixa A ordenada e B vazia.</p>
+  <div class="flowline">
+    <div class="step a"><div class="tag">entrada</div><h3>Argumentos</h3><p>Ex.: <code>./push_swap 12 2 5 23 "8" 454 "7"</code>. Aspas em numeros isolados sao aceitas.</p></div>
+    <div class="arrow">-&gt;</div>
+    <div class="step"><div class="tag">analise</div><h3>Parser + indices</h3><p>Valida inteiros, remove risco de duplicados e converte valores para ranks de 0 a N-1.</p></div>
+    <div class="arrow">-&gt;</div>
+    <div class="step b"><div class="tag">saida</div><h3>Operacoes</h3><p>Gera linhas como <code>pb</code>, <code>ra</code>, <code>pa</code>. O checker usa essas linhas para validar.</p></div>
+  </div>
+  <div class="callout"><b>Resumo:</b> o valor real importa para validar. Depois disso, os algoritmos trabalham principalmente com indices, porque comparar ranks e mais simples e seguro.</div>
+</section>
+
+<section>
+  <div class="section-head"><span class="num">02</span><h2>Mapa dos arquivos</h2></div>
+  <p class="sub">A solucao foi separada por responsabilidades para facilitar defesa, manutencao e ajustes da Norm.</p>
+  <div class="filegrid">
+    <div class="filecard"><div class="fname">main.c</div><div class="fdesc">Coordena o fluxo do push_swap: parsing, disorder, indices, selecao da estrategia e benchmark.</div></div>
+    <div class="filecard"><div class="fname">parser.c</div><div class="fdesc">Fluxo principal do parser. Ficou curto: inicializa a struct, percorre argv e delega cada argumento.</div></div>
+    <div class="filecard"><div class="fname">parser_token.c</div><div class="fdesc">Divide argumentos em tokens, reconhece flags e chama a validacao de numero.</div></div>
+    <div class="filecard"><div class="fname">parser_value.c</div><div class="fdesc">Valida inteiro com sinal, protege contra overflow e rejeita duplicados.</div></div>
+    <div class="filecard"><div class="fname">index.c</div><div class="fdesc">Calcula ranks ordenados e tambem mede disorder por inversoes.</div></div>
+    <div class="filecard"><div class="fname">ops.c</div><div class="fdesc">Implementa swap, push, rotate, reverse rotate e a versao que imprime a operacao.</div></div>
+    <div class="filecard"><div class="fname">op_name.c</div><div class="fdesc">Centraliza os nomes das onze operacoes sem usar variavel global.</div></div>
+    <div class="filecard"><div class="fname">sort_small.c</div><div class="fdesc">Resolve casos pequenos, especialmente 2, 3, 4 e 5 elementos.</div></div>
+    <div class="filecard"><div class="fname">sort_chunk.c</div><div class="fdesc">Ordenacao por janelas/chunks: empurra faixas para B e reconstrui A pelo maior valor.</div></div>
+    <div class="filecard"><div class="fname">sort_radix.c</div><div class="fdesc">Modo complex: usa chunks otimizados ate 500 e radix como fallback para entradas maiores.</div></div>
+    <div class="filecard"><div class="fname">bench.c</div><div class="fdesc">Imprime em stderr o relatorio de estrategia, disorder e contagem de operacoes.</div></div>
+    <div class="filecard"><div class="fname">checker_*_bonus.c</div><div class="fdesc">Bonus: le operacoes do stdin, executa silenciosamente e imprime OK ou KO.</div></div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head"><span class="num">03</span><h2>Fluxo da execucao do push_swap</h2></div>
+  <p class="sub">A ordem das etapas e importante: o disorder precisa ser medido antes de qualquer movimento, e a compressao para indices acontece antes da ordenacao.</p>
+  <div class="vertical">
+    <div class="row"><div class="idx">1</div><div class="box"><h3>Recebe argv</h3><p>Se nao houver argumentos, retorna sem imprimir nada. Se houver flags, elas selecionam a estrategia ou ativam <code>--bench</code>.</p></div></div>
+    <div class="row"><div class="idx">2</div><div class="box"><h3>Valida tokens</h3><p>Rejeita strings vazias, espacos puros, caracteres invalidos, overflow de int e duplicados como <code>0</code> e <code>+0</code>.</p></div></div>
+    <div class="row"><div class="idx">3</div><div class="box"><h3>Calcula disorder</h3><p>Conta pares invertidos e divide pelo total de pares possiveis. Resultado entre 0 e 1.</p></div></div>
+    <div class="row"><div class="idx">4</div><div class="box"><h3>Prepara indices</h3><p>O menor valor vira 0, o maior vira N-1. Isso deixa todos os algoritmos independentes dos valores originais.</p></div></div>
+    <div class="row"><div class="idx">5</div><div class="box"><h3>Ordena</h3><p>Se ja estiver ordenado, imprime zero operacoes. Caso contrario, chama simple, medium, complex ou adaptive.</p></div></div>
+    <div class="row"><div class="idx">6</div><div class="box"><h3>Finaliza</h3><p>Com <code>--bench</code>, escreve metricas em stderr. Em qualquer caso, libera a memoria alocada.</p></div></div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head"><span class="num">04</span><h2>As duas pilhas em array</h2></div>
+  <p class="sub">Nesta implementacao, cada pilha e um array com o topo na posicao 0. Isso simplifica o raciocinio: operar no topo significa mexer no indice 0.</p>
+  <div class="panel">
+    <svg viewBox="0 0 760 310" xmlns="http://www.w3.org/2000/svg">
+      <text x="135" y="28" fill="#9aa2b1" font-size="12" text-anchor="middle">A antes</text>
+      <text x="625" y="28" fill="#9aa2b1" font-size="12" text-anchor="middle">A depois</text>
+      <text x="380" y="50" fill="#e8a33d" font-size="14" text-anchor="middle">exemplo: pb move topo de A para topo de B</text>
+      <g>
+        <rect x="80" y="52" width="110" height="34" rx="6" fill="none" stroke="#e8a33d" stroke-width="2"/>
+        <text x="135" y="74" fill="#e8a33d" font-size="14" text-anchor="middle">8 topo</text>
+        <rect x="80" y="92" width="110" height="34" rx="6" fill="none" stroke="#e8a33d" stroke-width="2" opacity=".75"/>
+        <text x="135" y="114" fill="#e8a33d" font-size="14" text-anchor="middle">3</text>
+        <rect x="80" y="132" width="110" height="34" rx="6" fill="none" stroke="#e8a33d" stroke-width="2" opacity=".55"/>
+        <text x="135" y="154" fill="#e8a33d" font-size="14" text-anchor="middle">5</text>
+      </g>
+      <g>
+        <rect x="300" y="92" width="110" height="34" rx="6" fill="none" stroke="#3dbfae" stroke-width="2"/>
+        <text x="355" y="114" fill="#3dbfae" font-size="14" text-anchor="middle">2 topo</text>
+        <rect x="300" y="132" width="110" height="34" rx="6" fill="none" stroke="#3dbfae" stroke-width="2" opacity=".7"/>
+        <text x="355" y="154" fill="#3dbfae" font-size="14" text-anchor="middle">1</text>
+      </g>
+      <path d="M195 70 C240 60,260 96,298 104" stroke="#9aa2b1" fill="none" stroke-width="1.4" marker-end="url(#arr2)"/>
+      <defs><marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#9aa2b1"/></marker></defs>
+      <g>
+        <rect x="570" y="52" width="110" height="34" rx="6" fill="none" stroke="#e8a33d" stroke-width="2"/>
+        <text x="625" y="74" fill="#e8a33d" font-size="14" text-anchor="middle">3 topo</text>
+        <rect x="570" y="92" width="110" height="34" rx="6" fill="none" stroke="#e8a33d" stroke-width="2" opacity=".75"/>
+        <text x="625" y="114" fill="#e8a33d" font-size="14" text-anchor="middle">5</text>
+      </g>
+      <text x="355" y="210" fill="#9aa2b1" font-size="12" text-anchor="middle">B recebe 8 no topo; A desloca os demais uma posicao para cima</text>
+    </svg>
+  </div>
+  <table>
+    <tr><th>Operacao</th><th>Como acontece no array</th></tr>
+    <tr><td><code>swap</code></td><td>Troca <code>data[0]</code> com <code>data[1]</code>.</td></tr>
+    <tr><td><code>push</code></td><td>Remove o topo da origem, desloca a origem para a esquerda, abre espaco no destino e insere no indice 0.</td></tr>
+    <tr><td><code>rotate</code></td><td>Guarda o primeiro elemento, desloca o resto para cima e coloca o antigo topo no final.</td></tr>
+    <tr><td><code>reverse rotate</code></td><td>Guarda o ultimo elemento, desloca o resto para baixo e coloca o antigo ultimo no topo.</td></tr>
+  </table>
+</section>
+
+<section>
+  <div class="section-head"><span class="num">05</span><h2>Parser: o que aceita e o que rejeita</h2></div>
+  <p class="sub">O parser aceita tanto argumentos separados quanto varios numeros dentro de uma string. As flags do push_swap sao reconhecidas apenas no binario principal; o checker bonus aceita somente numeros.</p>
+  <table>
+    <tr><th>Entrada</th><th>Resultado</th><th>Motivo</th></tr>
+    <tr><td><code>12 2 5 23 "8" 454 "7"</code></td><td>aceita</td><td>Aspas em numero isolado nao mudam o conteudo recebido: continuam sendo inteiros validos.</td></tr>
+    <tr><td><code>"12 2 5" 23</code></td><td>aceita</td><td>O parser divide cada argumento por espacos internos.</td></tr>
+    <tr><td><code>1 2 2</code></td><td>Error</td><td>Valor duplicado.</td></tr>
+    <tr><td><code>0 +0</code></td><td>Error</td><td>Depois de convertido, ambos sao o mesmo inteiro.</td></tr>
+    <tr><td><code>2147483648</code></td><td>Error</td><td>Fora do limite de <code>int</code>.</td></tr>
+    <tr><td><code>""</code> ou <code>" "</code></td><td>Error</td><td>Argumento vazio ou so com espacos.</td></tr>
+  </table>
+  <div class="callout alert"><b>Regra de erro:</b> entrada invalida imprime exatamente <code>Error\n</code> em stderr e nada em stdout.</div>
+</section>
+
+<section>
+  <div class="section-head"><span class="num">06</span><h2>Disorder e selecao adaptive</h2></div>
+  <p class="sub">O disorder e a porcentagem de pares fora de ordem. Uma lista ja ordenada tem 0. Uma lista reversa tem 1.</p>
+  <div class="decision">
+    <div class="card"><div class="range">disorder &lt; 0.20</div><h3>low disorder</h3><p>Adaptive usa uma janela maior de chunk para resolver entradas quase ordenadas sem estourar em 500 numeros.</p></div>
+    <div class="card"><div class="range">0.20 a 0.49</div><h3>medium disorder</h3><p>Adaptive usa a configuracao medium, que tende a ficar perto de excelente em 100 e 500.</p></div>
+    <div class="card"><div class="range">disorder &gt;= 0.50</div><h3>high disorder</h3><p>Adaptive chama complex. Para ate 500, usa chunks otimizados; acima disso, radix e o fallback previsivel.</p></div>
+  </div>
+  <div class="kpis">
+    <div class="kpi"><b>0 ops</b><span>entrada ja ordenada</span></div>
+    <div class="kpi"><b>10 ops</b><span>maximo simulado em N=5</span></div>
+    <div class="kpi"><b>~580</b><span>100 numeros por chunks</span></div>
+    <div class="kpi"><b>~5k</b><span>500 numeros por chunks</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head"><span class="num">07</span><h2>Estrategias de ordenacao</h2></div>
+  <p class="sub">O projeto tem quatro modos selecionaveis em runtime. Mesmo quando uma estrategia compartilha a tecnica de chunks, o objetivo e especializar parametros para o perfil de teste.</p>
+  <table>
+    <tr><th>Modo</th><th>Tecnica</th><th>Resumo didatico</th></tr>
+    <tr><td><code>--simple</code></td><td>small + chunk conservador</td><td>Resolve pequenos diretamente. Em entradas grandes, usa chunks com janela maior para evitar o antigo estouro acima de 12000 operacoes.</td></tr>
+    <tr><td><code>--medium</code></td><td>chunk por range</td><td>Empurra para B valores dentro de uma janela de indices e depois puxa de volta sempre o maior de B.</td></tr>
+    <tr><td><code>--complex</code></td><td>chunk otimizado + radix fallback</td><td>Ate 500, usa ranges calibrados para vencer o teste de especializacao. Acima disso, radix mantem comportamento previsivel.</td></tr>
+    <tr><td><code>--adaptive</code></td><td>decisao por disorder</td><td>Escolhe o caminho conforme a entrada: baixa, media ou alta desordem.</td></tr>
+  </table>
+  <div class="callout"><b>Como o chunk pensa:</b> primeiro A esvazia em B por faixas de indices; depois B devolve para A do maior para o menor. Como cada <code>pa</code> coloca no topo, A termina crescente.</div>
+</section>
+
+<section>
+  <div class="section-head"><span class="num">08</span><h2>Bonus: como o checker funciona</h2></div>
+  <p class="sub">O checker nao decide uma estrategia. Ele recebe a pilha inicial, le operacoes do stdin e testa se o resultado final esta correto.</p>
+  <div class="flowline">
+    <div class="step a"><div class="tag">argv</div><h3>Cria A</h3><p>Usa parser proprio de bonus, sem aceitar flags. A entrada invalida gera <code>Error</code>.</p></div>
+    <div class="arrow">-&gt;</div>
+    <div class="step"><div class="tag">stdin</div><h3>Le operacoes</h3><p>Cada linha precisa ser uma das 11 instrucoes validas, terminada por <code>\n</code>.</p></div>
+    <div class="arrow">-&gt;</div>
+    <div class="step b"><div class="tag">resultado</div><h3>OK ou KO</h3><p>Imprime <code>OK</code> se A ficou ordenada e B vazia; caso contrario imprime <code>KO</code>.</p></div>
+  </div>
+  <table>
+    <tr><th>Comando</th><th>Significado</th></tr>
+    <tr><td><code>make bonus</code></td><td>Compila o binario <code>checker</code>.</td></tr>
+    <tr><td><code>./push_swap 3 2 1 | ./checker 3 2 1</code></td><td>Uso mais comum: o push_swap gera as operacoes e o checker valida.</td></tr>
+    <tr><td><code>./checker 3 2 1</code></td><td>Permite digitar operacoes manualmente e finalizar com EOF.</td></tr>
+  </table>
+</section>
+
+<section>
+  <div class="section-head"><span class="num">09</span><h2>Aula rapida para defender o codigo</h2></div>
+  <p class="sub">Uma forma simples de explicar o projeto na avaliacao e seguir esta ordem.</p>
+  <ol class="lesson">
+    <li>Comece pelo contrato: a saida nao e uma lista, e uma sequencia de operacoes validas do Push_swap.</li>
+    <li>Explique o parser: aceita numeros separados ou dentro de strings, rejeita vazios, invalidos, overflow e duplicatas.</li>
+    <li>Mostre a compressao de indices: valores reais viram ranks, entao os algoritmos trabalham no intervalo <code>0..n-1</code>.</li>
+    <li>Explique o disorder: inversoes dividido pelo total de pares; ele guia o modo <code>--adaptive</code>.</li>
+    <li>Mostre as operacoes: todas mexem no topo do array, e a versao normal imprime o nome da instrucao.</li>
+    <li>Explique chunks: A manda faixas para B; B devolve o maior disponivel para A ate ficar vazia.</li>
+    <li>Finalize com o bonus: o checker executa silenciosamente as operacoes e verifica <code>A ordenada && B vazia</code>.</li>
+  </ol>
+  <div class="callout"><b>Frase boa para lembrar:</b> "O push_swap calcula a receita; o checker cozinha a receita e prova se o prato saiu certo."</div>
+</section>
+
+</div>
+<footer>push_swap - relatorio/aula - fresh_push_swap</footer>
+</body>
+</html>
